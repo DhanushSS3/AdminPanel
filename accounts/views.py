@@ -174,7 +174,9 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.conf import settings
 from django.db.models import Q
 
+
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])  # Added JWT authentication
 def live_user_profiles(request):
     """Returns a JSON response of live UserProfile objects with limited fields."""
     search = request.query_params.get('search')
@@ -190,6 +192,7 @@ def live_user_profiles(request):
     return Response(serializer.data)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])  # Added JWT authentication
 def demo_user_profiles(request):
     """Returns a JSON response of demo UserProfile objects with limited fields."""
     search = request.query_params.get('search')
@@ -203,6 +206,30 @@ def demo_user_profiles(request):
         )
     serializer = UserProfileLimitedSerializer(demo_profiles, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated]) # Added JWT authentication
+def group_list(request):
+    groups = Group.objects.all()
+    serializer = GroupSerializer(groups, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated]) # Added JWT authentication
+def order_list(request):
+    search = request.query_params.get('search')
+    orders = Order.objects.all().order_by('-created_at')
+    if search:
+        orders = orders.filter(
+            Q(order_id__icontains=search) |
+            Q(order_status__icontains=search) |
+            Q(order_user_id__icontains=search) |
+            Q(order_company_name__icontains=search) |
+            Q(order_type__icontains=search)
+        )
+    serializer = OrderSerializer(orders, many=True)
+    return Response(serializer.data)
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -238,28 +265,7 @@ def login_view(request):
         return Response({'message': 'User is not a superuser'}, status=status.HTTP_403_FORBIDDEN)
     else:
         return Response({'message': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
-
-@api_view(['GET'])
-def group_list(request):
-    groups = Group.objects.all()
-    serializer = GroupSerializer(groups, many=True)
-    return Response(serializer.data)
-
-@api_view(['GET'])
-def order_list(request):
-    search = request.query_params.get('search')
-    orders = Order.objects.all().order_by('-created_at')
-    if search:
-        orders = orders.filter(
-            Q(order_id__icontains=search) |
-            Q(order_status__icontains=search) |
-            Q(order_user_id__icontains=search) |
-            Q(order_company_name__icontains=search) |
-            Q(order_type__icontains=search)
-        )
-    serializer = OrderSerializer(orders, many=True)
-    return Response(serializer.data)
-
+    
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def withdrawal_requests_list(request):
