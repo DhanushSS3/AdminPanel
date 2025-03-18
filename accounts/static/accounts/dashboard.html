@@ -1,1474 +1,3 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        .sidebar {
-            width: 250px;
-            min-width: 250px;
-            max-width: 250px;
-            background-color: #343a40;
-            color: white;
-            padding: 20px;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .sidebar h4 {
-            margin-bottom: 20px;
-        }
-
-        .sidebar a {
-            color: white;
-            text-decoration: none;
-            padding: 10px 15px;
-            margin-bottom: 5px;
-            display: block;
-        }
-
-        .sidebar a.active {
-            background-color: #007bff;
-            border-radius: 5px;
-        }
-
-        .content {
-            flex-grow: 1;
-            padding: 20px;
-            height: 100%;
-            overflow-y: auto;
-        }
-
-        .search-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .search-container input {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .table-container {
-            overflow-x: auto;
-        }
-
-        .table-container table {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: fixed;
-        }
-
-        .table-container th,
-        .table-container td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-            word-wrap: break-word;
-        }
-
-        .table-container th {
-            background-color: #f2f2f2;
-        }
-
-        #live-customers-content,
-        #demo-customers-content,
-        #groups-content,
-        #orders-content {
-            display: none;
-        }
-
-        #live-customers-content {
-            display: block;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="sidebar">
-        <h4>Hello Admin</h4>
-        <a href="#" class="active" id="live-customer-link">Live Customer</a>
-        <a href="#" id="demo-customer-link">Demo Customer</a>
-        <a href="#" id="groups-link">Group</a>
-        <a href="#" id="orders-link">Order</a>
-        <a href="#" id="money-requests-link">Money Requests</a> 
-        <a href="#" id="logout-link">Logout</a>
-    </div>
-
-    <div class="content">
-        <div class="search-container">
-            <h2>Customer</h2>
-            <input type="text" placeholder="Search" class="search-input">
-        </div>
-
-        <div id="money-requests-content" class="table-container">
-            <table class="table table-striped" id="money-requests-table">
-                <thead>
-                    <tr>
-                        <th>Sr. No.</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone Number</th>
-                        <th>Request Amount</th>
-                        <th>Request Type</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
-
-        <div id="live-customers-content" class="table-container">
-            <table class="table table-striped" id="live-customer-table">
-                <thead>
-                    <tr>
-                        <th>Sr. No.</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone No</th>
-                        <th>Balance</th>
-                        <th>Account Number</th>
-                        <th>Account Status</th>
-                        <th>Leverage</th>
-                        <th>Registration Date</th>
-                        <th>Group</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
-
-        <div id="demo-customers-content" class="table-container">
-            <table class="table table-striped" id="demo-customer-table">
-                <thead>
-                    <tr>
-                        <th>Sr. No.</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone No</th>
-                        <th>Balance</th>
-                        <th>Account Number</th>
-                        <th>Account Status</th>
-                        <th>Leverage</th>
-                        <th>Registration Date</th>
-                        <th>Group</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
-
-        <div id="groups-content" class="table-container">
-            <table class="table table-striped" id="groups-table">
-                <thead>
-                    <tr>
-                        <th>Sr. No.</th>
-                        <th>Symbol</th>
-                        <th>Name</th>
-                        <th>Commission</th>
-                        <th>Commission Type</th>
-                        <th>Commission Value Type</th>
-                        <th>Margin</th>
-                        <th>Spread</th>
-                        <th>Deviation</th>
-                        <th>Min Lot</th>
-                        <th>Max Lot</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
-
-        <div id="orders-content" class="table-container">
-            <table class="table table-striped" id="orders-table">
-                <thead>
-                    <tr>
-                        <th>Sr. No.</th>
-                        <th>Order ID</th>
-                        <th>Order Status</th>
-                        <th>User ID</th>
-                        <th>Company Name</th>
-                        <th>Order Type</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                        <th>Contract Value</th>
-                        <th>Margin</th>
-                        <th>Net Profit</th>
-                        <th>Close Price</th>
-                        <th>Swap</th>
-                        <th>Commission</th>
-                        <th>Created At</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <script>
-        const liveCustomerLink = document.getElementById('live-customer-link');
-        const demoCustomerLink = document.getElementById('demo-customer-link');
-        const groupsLink = document.getElementById('groups-link');
-        const ordersLink = document.getElementById('orders-link');
-
-        const moneyRequestsLink = document.getElementById('money-requests-link');
-        const moneyRequestsContent = document.getElementById('money-requests-content');
-
-
-        const liveCustomersContent = document.getElementById('live-customers-content');
-        const demoCustomersContent = document.getElementById('demo-customers-content');
-        const groupsContent = document.getElementById('groups-content');
-        const ordersContent = document.getElementById('orders-content');
-
-        const liveCustomerTableBody = document.querySelector('#live-customer-table tbody');
-        const demoCustomerTableBody = document.querySelector('#demo-customer-table tbody');
-        const groupsTableBody = document.querySelector('#groups-table tbody');
-        const ordersTableBody = document.querySelector('#orders-table tbody');
-
-        const moneyRequestsTableBody = document.querySelector('#money-requests-table tbody');
-
-        function createDropdown(customer) { // Pass the customer data
-            const dropdown = document.createElement('div');
-            dropdown.classList.add('dropdown');
-        
-            const button = document.createElement('button');
-            button.classList.add('btn', 'btn-sm', 'dropdown-toggle');
-            button.innerHTML = '&#9776;';
-            button.setAttribute('data-bs-toggle', 'dropdown');
-            button.setAttribute('aria-expanded', 'false');
-        
-            const menu = document.createElement('ul');
-            menu.classList.add('dropdown-menu');
-        
-            const options = [
-                { label: 'Manage Funds', action: () => manageFunds(customer) },
-                { label: 'Trades', action: () => trades(customer) },
-                { label: 'User Setting', action: () => userSetting(customer) },
-                { label: 'User Kyc', action: () => userKyc(customer) },
-                { label: 'Block User', action: () => blockUser(customer) }
-            ];
-        
-            options.forEach(option => {
-                const item = document.createElement('li');
-                const link = document.createElement('a');
-                link.classList.add('dropdown-item');
-                link.href = '#';
-                link.textContent = option.label;
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    option.action();
-                });
-                item.appendChild(link);
-                menu.appendChild(item);
-            });
-        
-            dropdown.appendChild(button);
-            dropdown.appendChild(menu);
-        
-            return dropdown;
-        }
-
-        function fetchAndDisplayLiveCustomers(searchTerm = '') {
-    let url = '/accounts/api/live-user-profiles/';
-    if (searchTerm) {
-        url += `?search=${searchTerm}`;
-    }
-
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            console.log("Live Customer Data:", data);
-
-            liveCustomerTableBody.innerHTML = '';
-
-            data.forEach((customer, index) => {
-                const row = liveCustomerTableBody.insertRow();
-
-                const srNoCell = row.insertCell(0);
-                srNoCell.textContent = index + 1;
-
-                const nameCell = row.insertCell(1);
-                nameCell.textContent = customer.name || "NA";
-
-                const emailCell = row.insertCell(2);
-                emailCell.textContent = customer.email || "NA";
-
-                const phoneCell = row.insertCell(3);
-                phoneCell.textContent = customer.phone_number || "NA";
-
-                const walletAmountCell = row.insertCell(4);
-                walletAmountCell.textContent = customer.wallet_total_amount != null ? customer.wallet_total_amount : "NA";
-
-                const accountNumberCell = row.insertCell(5);
-                accountNumberCell.textContent = customer.account_number || "NA";
-
-                const accountStatusCell = row.insertCell(6);
-                accountStatusCell.textContent = customer.status || "NA";
-
-                const leverageCell = row.insertCell(7);
-                leverageCell.textContent = customer.leverage || "NA";
-
-                const registrationDateCell = row.insertCell(8);
-                if (customer.created_at) {
-                    const registrationDate = new Date(customer.created_at);
-                    const day = String(registrationDate.getDate()).padStart(2, '0');
-                    const month = String(registrationDate.getMonth() + 1).padStart(2, '0');
-                    const year = registrationDate.getFullYear();
-                    const formattedDate = `${day}-${month}-${year}`; // Corrected line
-                    registrationDateCell.textContent = formattedDate;
-                } else {
-                    registrationDateCell.textContent = "NA";
-                }
-
-                const groupCell = row.insertCell(9);
-                groupCell.textContent = customer.group || "NA";
-
-                const actionsCell = row.insertCell(10);
-                const dropdown = createDropdown(customer); // Pass customer data
-                actionsCell.appendChild(dropdown);
-            });
-
-            liveCustomersContent.style.display = 'block';
-            demoCustomersContent.style.display = 'none';
-            groupsContent.style.display = 'none';
-            ordersContent.style.display = 'none';
-            moneyRequestsContent.style.display = 'none';
-        })
-        .catch(error => {
-            console.error("Error fetching live customers:", error);
-        });
-}
-
-function fetchAndDisplayDemoCustomers(searchTerm = '') {
-    let url = '/accounts/api/demo-user-profiles/';
-    if (searchTerm) {
-        url += `?search=${searchTerm}`;
-    }
-
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            console.log("Demo Customer Data:", data);
-            demoCustomerTableBody.innerHTML = '';
-
-            data.forEach((customer, index) => {
-                const row = demoCustomerTableBody.insertRow();
-
-                const srNoCell = row.insertCell(0);
-                srNoCell.textContent = index + 1;
-
-                const nameCell = row.insertCell(1);
-                nameCell.textContent = customer.name || "NA";
-
-                const emailCell = row.insertCell(2);
-                emailCell.textContent = customer.email || "NA";
-
-                const phoneCell = row.insertCell(3);
-                phoneCell.textContent = customer.phone_number || "NA";
-
-                const walletAmountCell = row.insertCell(4);
-                walletAmountCell.textContent = customer.wallet_total_amount != null ? customer.wallet_total_amount : "NA";
-
-                const accountNumberCell = row.insertCell(5);
-                accountNumberCell.textContent = customer.account_number || "NA";
-
-                const accountStatusCell = row.insertCell(6);
-                accountStatusCell.textContent = customer.status || "NA";
-
-                const leverageCell = row.insertCell(7);
-                leverageCell.textContent = customer.leverage || "NA";
-
-                const registrationDateCell = row.insertCell(8);
-                if (customer.created_at) {
-                    const registrationDate = new Date(customer.created_at);
-                    const day = String(registrationDate.getDate()).padStart(2, '0');
-                    const month = String(registrationDate.getMonth() + 1).padStart(2, '0');
-                    const year = registrationDate.getFullYear();
-                    const formattedDate = `${day}-${month}-${year}`;
-                    registrationDateCell.textContent = formattedDate;
-                } else {
-                    registrationDateCell.textContent = "NA";
-                }
-
-                const groupCell = row.insertCell(9);
-                groupCell.textContent = customer.group || "NA";
-
-                const actionsCell = row.insertCell(10);
-                const dropdown = createDropdown(customer); // Pass customer data
-                actionsCell.appendChild(dropdown);
-            });
-
-            liveCustomersContent.style.display = 'none';
-            demoCustomersContent.style.display = 'block';
-            groupsContent.style.display = 'none';
-            ordersContent.style.display = 'none';
-            moneyRequestsContent.style.display = 'none';
-        })
-        .catch(error => {
-            console.error("Error fetching demo customers:", error);
-        });
-}
-
-function fetchAndDisplayGroups(searchTerm = '') {
-    let url = '/accounts/api/groups/';
-    if (searchTerm) {
-        url += `?search=${searchTerm}`;
-    }
-
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            console.log("Group Data:", data);
-            groupsTableBody.innerHTML = '';
-
-            data.forEach((group, index) => {
-                const row = groupsTableBody.insertRow();
-
-                const srNoCell = row.insertCell(0);
-                srNoCell.textContent = index + 1;
-
-                const symbolCell = row.insertCell(1);
-                symbolCell.textContent = group.symbol || "NA";
-
-                const nameCell = row.insertCell(2);
-                nameCell.textContent = group.name || "NA";
-
-                const commissionCell = row.insertCell(3);
-                commissionCell.textContent = group.commision || "NA";
-
-                const commissionTypeCell = row.insertCell(4);
-                commissionTypeCell.textContent = group.commision_type || "NA";
-
-                const commissionValueTypeCell = row.insertCell(5);
-                commissionValueTypeCell.textContent = group.commision_value_type || "NA";
-
-                const marginCell = row.insertCell(6);
-                marginCell.textContent = group.margin || "NA";
-
-                const spreadCell = row.insertCell(7);
-                spreadCell.textContent = group.spread || "NA";
-
-                const deviationCell = row.insertCell(8);
-                deviationCell.textContent = group.deviation || "NA";
-
-                const minLotCell = row.insertCell(9);
-                minLotCell.textContent = group.min_lot || "NA";
-
-                const maxLotCell = row.insertCell(10);
-                maxLotCell.textContent = group.max_lot || "NA";
-
-                const actionsCell = row.insertCell(11);
-                const dropdown = createDropdown();
-                actionsCell.appendChild(dropdown);
-            });
-
-            liveCustomersContent.style.display = 'none';
-            demoCustomersContent.style.display = 'none';
-            groupsContent.style.display = 'block';
-            ordersContent.style.display = 'none';
-            moneyRequestsContent.style.display = 'none';
-        })
-        .catch(error => {
-            console.error("Error fetching groups:", error);
-        });
-    }
-
-        function fetchAndDisplayOrders() {
-            fetch('/accounts/api/orders/')
-                .then(response => response.json())
-                .then(data => {
-                    console.log("Order Data:", data);
-                    ordersTableBody.innerHTML = '';
-        
-                    data.forEach((order, index) => {
-                        const row = ordersTableBody.insertRow();
-        
-                        const srNoCell = row.insertCell(0);
-                        srNoCell.textContent = index + 1;
-        
-                        const orderIdCell = row.insertCell(1);
-                        orderIdCell.textContent = order.order_id || "NA";
-        
-                        const orderStatusCell = row.insertCell(2);
-                        orderStatusCell.textContent = order.order_status || "NA";
-        
-                        const userIdCell = row.insertCell(3);
-                        userIdCell.textContent = order.order_user_id || "NA";
-        
-                        const companyNameCell = row.insertCell(4);
-                        companyNameCell.textContent = order.order_company_name || "NA";
-        
-                        const orderTypeCell = row.insertCell(5);
-                        orderTypeCell.textContent = order.order_type || "NA";
-        
-                        const priceCell = row.insertCell(6);
-                        priceCell.textContent = order.order_price || "NA";
-        
-                        const quantityCell = row.insertCell(7);
-                        quantityCell.textContent = order.order_quantity || "NA";
-        
-                        const contractValueCell = row.insertCell(8);
-                        contractValueCell.textContent = order.contract_value || "NA";
-        
-                        const marginCell = row.insertCell(9);
-                        marginCell.textContent = order.margin || "NA";
-        
-                        const netProfitCell = row.insertCell(10);
-                        netProfitCell.textContent = order.net_profit || "NA";
-        
-                        const closePriceCell = row.insertCell(11);
-                        closePriceCell.textContent = order.close_price || "NA";
-        
-                        const swapCell = row.insertCell(12);
-                        swapCell.textContent = order.swap || "NA";
-        
-                        const commissionCell = row.insertCell(13);
-                        commissionCell.textContent = order.commission || "NA";
-        
-                        const createdAtCell = row.insertCell(14);
-                        if (order.created_at) {
-                            const createdAtDate = new Date(order.created_at);
-                            const day = String(createdAtDate.getDate()).padStart(2, '0');
-                            const month = String(createdAtDate.getMonth() + 1).padStart(2, '0');
-                            const year = createdAtDate.getFullYear();
-                            const hours = String(createdAtDate.getHours()).padStart(2, '0');
-                            const minutes = String(createdAtDate.getMinutes()).padStart(2, '0');
-                            const seconds = String(createdAtDate.getSeconds()).padStart(2, '0');
-        
-                            const formattedDate = `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
-                            createdAtCell.textContent = formattedDate;
-                        } else {
-                            createdAtCell.textContent = "NA";
-                        }
-        
-                        const actionsCell = row.insertCell(15);
-                        const dropdown = createDropdown();
-                        actionsCell.appendChild(dropdown);
-                    });
-        
-                    liveCustomersContent.style.display = 'none';
-                    demoCustomersContent.style.display = 'none';
-                    groupsContent.style.display = 'none';
-                    ordersContent.style.display = 'block';
-                })
-                .catch(error => {
-                    console.error("Error fetching orders:", error);
-                });
-        }
-
-        function fetchAndDisplayMoneyRequests() {
-            const accessToken = localStorage.getItem('access_token'); // Get access token
-        
-            fetch('/accounts/api/withdrawal-requests/', {
-                headers: {
-                    'Authorization': `Bearer ${accessToken}` // Add Authorization header
-                }
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log("Money Requests Data:", data);
-                    moneyRequestsTableBody.innerHTML = '';
-        
-                    if (data && data.data) {
-                        data.data.forEach((request, index) => {
-                            const row = moneyRequestsTableBody.insertRow();
-        
-                            const srNoCell = row.insertCell(0);
-                            srNoCell.textContent = index + 1;
-        
-                            const nameCell = row.insertCell(1);
-                            nameCell.textContent = request.user_details.name || "NA";
-        
-                            const emailCell = row.insertCell(2);
-                            emailCell.textContent = request.user_details.email || "NA";
-        
-                            const phoneCell = row.insertCell(3);
-                            phoneCell.textContent = request.user_details.phone_number || "NA";
-        
-                            const amountCell = row.insertCell(4);
-                            amountCell.textContent = request.request_details.amount || "NA";
-        
-                            const typeCell = row.insertCell(5);
-                            typeCell.textContent = request.request_details.type || "NA";
-        
-                            const statusCell = row.insertCell(6);
-                            statusCell.textContent = request.request_details.status || "NA";
-        
-                            const actionsCell = row.insertCell(7);
-                            const dropdown = createDropdown();
-                            actionsCell.appendChild(dropdown);
-                        });
-                    } else {
-                        console.error("Invalid or empty data from API:", data);
-                    }
-        
-                    liveCustomersContent.style.display = 'none';
-                    demoCustomersContent.style.display = 'none';
-                    groupsContent.style.display = 'none';
-                    ordersContent.style.display = 'none';
-                    moneyRequestsContent.style.display = 'block';
-                })
-                .catch(error => {
-                    console.error("Error fetching money requests:", error);
-                });
-        }
-
-        // Load Live Customers by default
-        fetchAndDisplayLiveCustomers();
-
-        // Event listeners for sidebar links
-        
-        // ... (previous code) ...
-
-        // ... (previous JavaScript code) ...
-
-        const logoutLink = document.getElementById('logout-link');
-
-        logoutLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            localStorage.removeItem('access_token'); // Clear the access token
-            window.location.href = '/static/accounts/login.html'; // Redirect to the login page
-        });
-
-// ... (rest of your JavaScript code) ...
-
-        liveCustomerLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            liveCustomerLink.classList.add('active');
-            demoCustomerLink.classList.remove('active');
-            groupsLink.classList.remove('active');
-            ordersLink.classList.remove('active');
-            moneyRequestsLink.classList.remove('active'); // Remove active class from money requests
-            moneyRequestsContent.style.display = 'none'; // Hide money requests
-            fetchAndDisplayLiveCustomers();
-        });
-
-        demoCustomerLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            demoCustomerLink.classList.add('active');
-            liveCustomerLink.classList.remove('active');
-            groupsLink.classList.remove('active');
-            ordersLink.classList.remove('active');
-            moneyRequestsLink.classList.remove('active'); // Remove active class from money requests
-            moneyRequestsContent.style.display = 'none'; // Hide money requests
-            fetchAndDisplayDemoCustomers();
-        });
-
-        groupsLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            groupsLink.classList.add('active');
-            liveCustomerLink.classList.remove('active');
-            demoCustomerLink.classList.remove('active');
-            ordersLink.classList.remove('active');
-            moneyRequestsLink.classList.remove('active'); // Remove active class from money requests
-            moneyRequestsContent.style.display = 'none'; // Hide money requests
-            fetchAndDisplayGroups();
-        });
-
-        ordersLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            ordersLink.classList.add('active');
-            liveCustomerLink.classList.remove('active');
-            demoCustomerLink.classList.remove('active');
-            groupsLink.classList.remove('active');
-            moneyRequestsLink.classList.remove('active'); // Remove active class from money requests
-            moneyRequestsContent.style.display = 'none'; // Hide money requests
-            fetchAndDisplayOrders();
-        });
-
-        moneyRequestsLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            moneyRequestsLink.classList.add('active');
-            liveCustomerLink.classList.remove('active');
-            demoCustomerLink.classList.remove('active');
-            groupsLink.classList.remove('active');
-            ordersLink.classList.remove('active');
-            fetchAndDisplayMoneyRequests();
-        });
-
-// ... (rest of your code) ...
-
-        
-
-        checkAuthentication(); // Check authentication on page load
-
-        async function checkAuthentication() {
-            const accessToken = localStorage.getItem('access_token');
-            const response = await fetch('/accounts/api/dashboard/', {
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`
-                }
-            });
-
-            if (!response.ok) {
-                window.location.href = '/static/accounts/login.html';
-            }
-        }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-
-</html> -->
-
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        .sidebar {
-            width: 250px;
-            min-width: 250px;
-            max-width: 250px;
-            background-color: #343a40;
-            color: white;
-            padding: 20px;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .sidebar h4 {
-            margin-bottom: 20px;
-        }
-
-        .sidebar a {
-            color: white;
-            text-decoration: none;
-            padding: 10px 15px;
-            margin-bottom: 5px;
-            display: block;
-        }
-
-        .sidebar a.active {
-            background-color: #007bff;
-            border-radius: 5px;
-        }
-
-        .content {
-            flex-grow: 1;
-            padding: 20px;
-            height: 100%;
-            overflow-y: auto;
-        }
-
-        .search-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .search-container input {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .table-container {
-            overflow-x: auto;
-        }
-
-        .table-container table {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: fixed;
-        }
-
-        .table-container th,
-        .table-container td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-            word-wrap: break-word;
-        }
-
-        .table-container th {
-            background-color: #f2f2f2;
-        }
-
-        #live-customers-content,
-        #demo-customers-content,
-        #groups-content,
-        #orders-content,
-        #money-requests-content {
-            display: none;
-        }
-
-        #live-customers-content {
-            display: block;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="sidebar">
-        <h4>Hello Admin</h4>
-        <a href="#" class="active" id="live-customer-link">Live Customer</a>
-        <a href="#" id="demo-customer-link">Demo Customer</a>
-        <a href="#" id="groups-link">Group</a>
-        <a href="#" id="orders-link">Order</a>
-        <a href="#" id="money-requests-link">Money Requests</a>
-        <a href="#" id="logout-link">Logout</a>
-    </div>
-
-    <div class="content">
-        <div class="search-container">
-            <h2>Customer</h2>
-            <input type="text" placeholder="Search" class="search-input">
-        </div>
-
-        <div id="money-requests-content" class="table-container">
-            <table class="table table-striped" id="money-requests-table">
-                <thead>
-                    <tr>
-                        <th>Sr. No.</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone Number</th>
-                        <th>Request Amount</th>
-                        <th>Request Type</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
-
-        <div id="live-customers-content" class="table-container">
-            <table class="table table-striped" id="live-customer-table">
-                <thead>
-                    <tr>
-                        <th>Sr. No.</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone No</th>
-                        <th>Balance</th>
-                        <th>Account Number</th>
-                        <th>Account Status</th>
-                        <th>Leverage</th>
-                        <th>Registration Date</th>
-                        <th>Group</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
-
-        <div id="demo-customers-content" class="table-container">
-            <table class="table table-striped" id="demo-customer-table">
-                <thead>
-                    <tr>
-                        <th>Sr. No.</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone No</th>
-                        <th>Balance</th>
-                        <th>Account Number</th>
-                        <th>Account Status</th>
-                        <th>Leverage</th>
-                        <th>Registration Date</th>
-                        <th>Group</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
-
-        <div id="groups-content" class="table-container">
-            <table class="table table-striped" id="groups-table">
-                <thead>
-                    <tr>
-                        <th>Sr. No.</th>
-                        <th>Symbol</th>
-                        <th>Name</th>
-                        <th>Commission</th>
-                        <th>Commission Type</th>
-                        <th>Commission Value Type</th>
-                        <th>Margin</th>
-                        <th>Spread</th>
-                        <th>Deviation</th>
-                        <th>Min Lot</th>
-                        <th>Max Lot</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
-
-        <div id="orders-content" class="table-container">
-            <table class="table table-striped" id="orders-table">
-                <thead>
-                    <tr>
-                        <th>Sr. No.</th>
-                        <th>Order ID</th>
-                        <th>Order Status</th>
-                        <th>User ID</th>
-                        <th>Company Name</th>
-                        <th>Order Type</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                        <th>Contract Value</th>
-                        <th>Margin</th>
-                        <th>Net Profit</th>
-                        <th>Close Price</th>
-                        <th>Swap</th>
-                        <th>Commission</th>
-                        <th>Created At</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <script>
-        const liveCustomerLink = document.getElementById('live-customer-link');
-        const demoCustomerLink = document.getElementById('demo-customer-link');
-        const groupsLink = document.getElementById('groups-link');
-        const ordersLink = document.getElementById('orders-link');
-        const moneyRequestsLink = document.getElementById('money-requests-link');
-
-        const moneyRequestsContent = document.getElementById('money-requests-content');
-        const liveCustomersContent = document.getElementById('live-customers-content');
-        const demoCustomersContent = document.getElementById('demo-customers-content');
-        const groupsContent = document.getElementById('groups-content');
-        const ordersContent = document.getElementById('orders-content');
-
-        const liveCustomerTableBody = document.querySelector('#live-customer-table tbody');
-        const demoCustomerTableBody = document.querySelector('#demo-customer-table tbody');
-        const groupsTableBody = document.querySelector('#groups-table tbody');
-        const ordersTableBody = document.querySelector('#orders-table tbody');
-        const moneyRequestsTableBody = document.querySelector('#money-requests-table tbody');
-
-        function createDropdown(customer) {
-            const dropdown = document.createElement('div');
-            dropdown.classList.add('dropdown');
-
-            const button = document.createElement('button');
-            button.classList.add('btn', 'btn-sm', 'dropdown-toggle');
-            button.innerHTML = '&#9776;';
-            button.setAttribute('data-bs-toggle', 'dropdown');
-            button.setAttribute('aria-expanded', 'false');
-
-            const menu = document.createElement('ul');
-            menu.classList.add('dropdown-menu');
-
-            const options = [
-                { label: 'Manage Funds', action: () => manageFunds(customer) },
-                { label: 'Trades', action: () => trades(customer) },
-                { label: 'User Setting', action: () => userSetting(customer) },
-                { label: 'User Kyc', action: () => userKyc(customer) },
-                { label: 'Block User', action: () => blockUser(customer) }
-            ];
-
-            options.forEach(option => {
-                const item = document.createElement('li');
-                const link = document.createElement('a');
-                link.classList.add('dropdown-item');
-                link.href = '#';
-                link.textContent = option.label;
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    option.action();
-                });
-                item.appendChild(link);
-                menu.appendChild(item);
-            });
-
-            dropdown.appendChild(button);
-            dropdown.appendChild(menu);
-
-            return dropdown;
-        }
-
-        function fetchAndDisplayLiveCustomers(searchTerm = '') {
-            let url = '/accounts/api/live-user-profiles/';
-            if (searchTerm) {
-                url += `?search=${searchTerm}`;
-            }
-
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    console.log("Live Customer Data:", data);
-
-                    liveCustomerTableBody.innerHTML = '';
-
-                    data.forEach((customer, index) => {
-                        const row = liveCustomerTableBody.insertRow();
-
-                        const srNoCell = row.insertCell(0);
-                        srNoCell.textContent = index + 1;
-
-                        const nameCell = row.insertCell(1);
-                        nameCell.textContent = customer.name || "NA";
-
-                        const emailCell = row.insertCell(2);
-                        emailCell.textContent = customer.email || "NA";
-
-                        const phoneCell = row.insertCell(3);
-                        phoneCell.textContent = customer.phone_number || "NA";
-
-                        const walletAmountCell = row.insertCell(4);
-                        walletAmountCell.textContent = customer.wallet_total_amount != null ? customer.wallet_total_amount : "NA";
-
-                        const accountNumberCell = row.insertCell(5);
-                        accountNumberCell.textContent = customer.account_number || "NA";
-
-                        const accountStatusCell = row.insertCell(6);
-                        accountStatusCell.textContent = customer.status || "NA";
-
-                        const leverageCell = row.insertCell(7);
-                        leverageCell.textContent = customer.leverage || "NA";
-
-                        const registrationDateCell = row.insertCell(8);
-                        if (customer.created_at) {
-                            const registrationDate = new Date(customer.created_at);
-                            const day = String(registrationDate.getDate()).padStart(2, '0');
-                            const month = String(registrationDate.getMonth() + 1).padStart(2, '0');
-                            const year = registrationDate.getFullYear();
-                            const formattedDate = `<span class="math-inline">\{day\}\-</span>{month}-${year}`;
-                            registrationDateCell.textContent = formattedDate;
-                        } else {
-                            registrationDateCell.textContent = "NA";
-                        }
-
-                        const groupCell = row.insertCell(9);
-                        groupCell.textContent = customer.group || "NA";
-
-                        const actionsCell = row.insertCell(10);
-                        const dropdown = createDropdown(customer);
-                        actionsCell.appendChild(dropdown);
-                    });
-
-                    liveCustomersContent.style.display = 'block';
-                    demoCustomersContent.style.display = 'none';
-                    groupsContent.style.display = 'none';
-                    ordersContent.style.display = 'none';
-                    moneyRequestsContent.style.display = 'none';
-                })
-                .catch(error => {
-                    console.error("Error fetching live customers:", error);
-                });
-        }
-
-        function fetchAndDisplayDemoCustomers(searchTerm = '') {
-            let url = '/accounts/api/demo-user-profiles/';
-            if (searchTerm) {
-                url += `?search=${searchTerm}`;
-            }
-
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    console.log("Demo Customer Data:", data);
-                    demoCustomerTableBody.innerHTML = '';
-
-                    data.forEach((customer, index) => {
-                        const row = demoCustomerTableBody.insertRow();
-
-                        const srNoCell = row.insertCell(0);
-                        srNoCell.textContent = index + 1;
-
-                        const nameCell = row.insertCell(1);
-                        nameCell.textContent = customer.name || "NA";
-
-                        const emailCell = row.insertCell(2);
-                        emailCell.textContent = customer.email || "NA";
-
-                        const phoneCell = row.insertCell(3);
-                        phoneCell.textContent = customer.phone_number || "NA";
-
-                        const walletAmountCell = row.insertCell(4);
-                        walletAmountCell.textContent = customer.wallet_total_amount != null ? customer.wallet_total_amount : "NA";
-
-                        const accountNumberCell = row.insertCell(5);
-                        accountNumberCell.textContent = customer.account_number || "NA";
-
-                        const accountStatusCell = row.insertCell(6);
-                        accountStatusCell.textContent = customer.status || "NA";
-
-                        const leverageCell = row.insertCell(7);
-                        leverageCell.textContent = customer.leverage || "NA";
-
-                        const registrationDateCell = row.insertCell(8);
-                        if (customer.created_at) {
-                            const registrationDate = new Date(customer.created_at);
-                            const day = String(registrationDate.getDate()).padStart(2, '0');
-                            const month = String(registrationDate.getMonth() + 1).padStart(2, '0');
-                            const year = registrationDate.getFullYear();
-                            const formattedDate = `<span class="math-inline">\{day\}\-</span>{month}-${year}`;
-                            registrationDateCell.textContent = formattedDate;
-                        } else {
-                            registrationDateCell.textContent = "NA";
-                        }
-
-                        const groupCell = row.insertCell(9);
-                        groupCell.textContent = customer.group || "NA";
-
-                        const actionsCell = row.insertCell(10);
-                        const dropdown = createDropdown(customer);
-                        actionsCell.appendChild(dropdown);
-                    });
-
-                    liveCustomersContent.style.display = 'none';
-                    demoCustomersContent.style.display = 'block';
-                    groupsContent.style.display = 'none';
-                    ordersContent.style.display = 'none';
-                    moneyRequestsContent.style.display = 'none';
-                })
-                .catch(error => {
-                    console.error("Error fetching demo customers:", error);
-                });
-        }
-
-        function fetchAndDisplayGroups(searchTerm = '') {
-            let url = '/accounts/api/groups/';
-            if (searchTerm) {
-                url += `?search=${searchTerm}`;
-            }
-
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    console.log("Group Data:", data);
-                    groupsTableBody.innerHTML = '';
-
-                    data.forEach((group, index) => {
-                        const row = groupsTableBody.insertRow();
-
-                        const srNoCell = row.insertCell(0);
-                        srNoCell.textContent = index + 1;
-
-                        const symbolCell = row.insertCell(1);
-                        symbolCell.textContent = group.symbol || "NA";
-
-                        const nameCell = row.insertCell(2);
-                        nameCell.textContent = group.name || "NA";
-
-                        const commissionCell = row.insertCell(3);
-                        commissionCell.textContent = group.commision || "NA";
-
-                        const commissionTypeCell = row.insertCell(4);
-                        commissionTypeCell.textContent = group.commision_type || "NA";
-
-                        const commissionValueTypeCell = row.insertCell(5);
-                        commissionValueTypeCell.textContent = group.commision_value_type || "NA";
-
-                        const marginCell = row.insertCell(6);
-                        marginCell.textContent = group.margin || "NA";
-
-                        const spreadCell = row.insertCell(7);
-                        spreadCell.textContent = group.spread || "NA";
-
-                        const deviationCell = row.insertCell(8);
-                        deviationCell.textContent = group.deviation || "NA";
-
-                        const minLotCell = row.insertCell(9);
-                        minLotCell.textContent = group.min_lot || "NA";
-
-                        const maxLotCell = row.insertCell(10);
-                        maxLotCell.textContent = group.max_lot || "NA";
-
-                        const actionsCell = row.insertCell(11);
-                        const dropdown = createDropdown();
-                        actionsCell.appendChild(dropdown);
-                    });
-
-                    liveCustomersContent.style.display = 'none';
-                    demoCustomersContent.style.display = 'none';
-                    groupsContent.style.display = 'block';
-                    ordersContent.style.display = 'none';
-                    moneyRequestsContent.style.display = 'none';
-                })
-                .catch(error => {
-                    console.error("Error fetching groups:", error);
-                });
-        }
-
-        function fetchAndDisplayOrders() {
-            fetch('/accounts/api/orders/')
-                .then(response => response.json())
-                .then(data => {
-                    console.log("Order Data:", data);
-                    ordersTableBody.innerHTML = '';
-
-                    data.forEach((order, index) => {
-                        const row = ordersTableBody.insertRow();
-
-                        const srNoCell = row.insertCell(0);
-                        srNoCell.textContent = index + 1;
-
-                        const orderIdCell = row.insertCell(1);
-                        orderIdCell.textContent = order.order_id || "NA";
-
-                        const orderStatusCell = row.insertCell(2);
-                        orderStatusCell.textContent = order.order_status|| "NA";
-
-                        const userIdCell = row.insertCell(3);
-                        userIdCell.textContent = order.order_user_id || "NA";
-
-                        const companyNameCell = row.insertCell(4);
-                        companyNameCell.textContent = order.order_company_name || "NA";
-
-                        const orderTypeCell = row.insertCell(5);
-                        orderTypeCell.textContent = order.order_type || "NA";
-
-                        const priceCell = row.insertCell(6);
-                        priceCell.textContent = order.order_price || "NA";
-
-                        const quantityCell = row.insertCell(7);
-                        quantityCell.textContent = order.order_quantity || "NA";
-
-                        const contractValueCell = row.insertCell(8);
-                        contractValueCell.textContent = order.contract_value || "NA";
-
-                        const marginCell = row.insertCell(9);
-                        marginCell.textContent = order.margin || "NA";
-
-                        const netProfitCell = row.insertCell(10);
-                        netProfitCell.textContent = order.net_profit || "NA";
-
-                        const closePriceCell = row.insertCell(11);
-                        closePriceCell.textContent = order.close_price || "NA";
-
-                        const swapCell = row.insertCell(12);
-                        swapCell.textContent = order.swap || "NA";
-
-                        const commissionCell = row.insertCell(13);
-                        commissionCell.textContent = order.commission || "NA";
-
-                        const createdAtCell = row.insertCell(14);
-                        if (order.created_at) {
-                            const createdAtDate = new Date(order.created_at);
-                            const day = String(createdAtDate.getDate()).padStart(2, '0');
-                            const month = String(createdAtDate.getMonth() + 1).padStart(2, '0');
-                            const year = createdAtDate.getFullYear();
-                            const hours = String(createdAtDate.getHours()).padStart(2, '0');
-                            const minutes = String(createdAtDate.getMinutes()).padStart(2, '0');
-                            const seconds = String(createdAtDate.getSeconds()).padStart(2, '0');
-
-                            const formattedDate = `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
-                            createdAtCell.textContent = formattedDate;
-                        } else {
-                            createdAtCell.textContent = "NA";
-                        }
-
-                        const actionsCell = row.insertCell(15);
-                        const dropdown = createDropdown();
-                        actionsCell.appendChild(dropdown);
-                    });
-
-                    liveCustomersContent.style.display = 'none';
-                    demoCustomersContent.style.display = 'none';
-                    groupsContent.style.display = 'none';
-                    ordersContent.style.display = 'block';
-                    moneyRequestsContent.style.display = 'none';
-                })
-                .catch(error => {
-                    console.error("Error fetching orders:", error);
-                });
-        }
-
-        function fetchAndDisplayMoneyRequests() {
-            const accessToken = localStorage.getItem('access_token');
-
-            fetch('/accounts/api/withdrawal-requests/', {
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`
-                }
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log("Money Requests Data:", data);
-                    moneyRequestsTableBody.innerHTML = '';
-
-                    if (data && data.data) {
-                        data.data.forEach((request, index) => {
-                            const row = moneyRequestsTableBody.insertRow();
-
-                            const srNoCell = row.insertCell(0);
-                            srNoCell.textContent = index + 1;
-
-                            const nameCell = row.insertCell(1);
-                            nameCell.textContent = request.user_details.name || "NA";
-
-                            const emailCell = row.insertCell(2);
-                            emailCell.textContent = request.user_details.email || "NA";
-
-                            const phoneCell = row.insertCell(3);
-                            phoneCell.textContent = request.user_details.phone_number || "NA";
-
-                            const amountCell = row.insertCell(4);
-                            amountCell.textContent = request.request_details.amount || "NA";
-
-                            const typeCell = row.insertCell(5);
-                            typeCell.textContent = request.request_details.type || "NA";
-
-                            const statusCell = row.insertCell(6);
-                            statusCell.textContent = request.request_details.status || "NA";
-
-                            const actionsCell = row.insertCell(7);
-                            const dropdown = createDropdown();
-                            actionsCell.appendChild(dropdown);
-                        });
-                    } else {
-                        console.error("Invalid or empty data from API:", data);
-                    }
-
-                    liveCustomersContent.style.display = 'none';
-                    demoCustomersContent.style.display = 'none';
-                    groupsContent.style.display = 'none';
-                    ordersContent.style.display = 'none';
-                    moneyRequestsContent.style.display = 'block';
-                })
-                .catch(error => {
-                    console.error("Error fetching money requests:", error);
-                });
-        }
-
-        fetchAndDisplayLiveCustomers();
-
-        const logoutLink = document.getElementById('logout-link');
-
-        logoutLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            localStorage.removeItem('access_token');
-            window.location.href = '/static/accounts/login.html';
-        });
-
-        liveCustomerLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            liveCustomerLink.classList.add('active');
-            demoCustomerLink.classList.remove('active');
-            groupsLink.classList.remove('active');
-            ordersLink.classList.remove('active');
-            moneyRequestsLink.classList.remove('active');
-            moneyRequestsContent.style.display = 'none';
-            fetchAndDisplayLiveCustomers();
-        });
-
-        demoCustomerLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            demoCustomerLink.classList.add('active');
-            liveCustomerLink.classList.remove('active');
-            groupsLink.classList.remove('active');
-            ordersLink.classList.remove('active');
-            moneyRequestsLink.classList.remove('active');
-            moneyRequestsContent.style.display = 'none';
-            fetchAndDisplayDemoCustomers();
-        });
-
-        groupsLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            groupsLink.classList.add('active');
-            liveCustomerLink.classList.remove('active');
-            demoCustomerLink.classList.remove('active');
-            ordersLink.classList.remove('active');
-            moneyRequestsLink.classList.remove('active');
-            moneyRequestsContent.style.display = 'none';
-            fetchAndDisplayGroups();
-        });
-
-        ordersLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            ordersLink.classList.add('active');
-            liveCustomerLink.classList.remove('active');
-            demoCustomerLink.classList.remove('active');
-            groupsLink.classList.remove('active');
-            moneyRequestsLink.classList.remove('active');
-            moneyRequestsContent.style.display = 'none';
-            fetchAndDisplayOrders();
-        });
-
-        moneyRequestsLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            moneyRequestsLink.classList.add('active');
-            liveCustomerLink.classList.remove('active');
-            demoCustomerLink.classList.remove('active');
-            groupsLink.classList.remove('active');
-            ordersLink.classList.remove('active');
-            fetchAndDisplayMoneyRequests();
-        });
-
-        checkAuthentication();
-
-        async function checkAuthentication() {
-            const accessToken = localStorage.getItem('access_token');
-            const response = await fetch('/accounts/api/dashboard/', {
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`
-                }
-            });
-
-            if (!response.ok) {
-                window.location.href = '/static/accounts/login.html';
-            }
-        }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-
-</html> -->
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -1568,6 +97,51 @@ function fetchAndDisplayGroups(searchTerm = '') {
         #live-customers-content {
             display: block;
         }
+
+
+        .user-settings-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .form-actions {
+            text-align: right;
+        }
+
+        .close-popup {
+            padding: 8px 15px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
     </style>
 </head>
 
@@ -1583,31 +157,12 @@ function fetchAndDisplayGroups(searchTerm = '') {
     </div>
 
     <div class="content">
-        <div class="search-container">
-            <h2>Customer</h2>
-            <input type="text" placeholder="Search" class="search-input">
-        </div>
-
-        <div id="money-requests-content" class="table-container">
-            <table class="table table-striped" id="money-requests-table">
-                <thead>
-                    <tr>
-                        <th>Sr. No.</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone Number</th>
-                        <th>Request Amount</th>
-                        <th>Request Type</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
 
         <div id="live-customers-content" class="table-container">
+            <div class="search-container" id="live-customers-search">
+                <h2>Live Customers</h2>
+                <input type="text" placeholder="Search Live Customers" class="search-input" data-search-target="live-customers">
+            </div>
             <table class="table table-striped" id="live-customer-table">
                 <thead>
                     <tr>
@@ -1630,6 +185,10 @@ function fetchAndDisplayGroups(searchTerm = '') {
         </div>
 
         <div id="demo-customers-content" class="table-container">
+            <div class="search-container" id="demo-customers-search">
+                <h2>Demo Customers</h2>
+                <input type="text" placeholder="Search Demo Customers" class="search-input" data-search-target="demo-customers">
+            </div>
             <table class="table table-striped" id="demo-customer-table">
                 <thead>
                     <tr>
@@ -1652,6 +211,15 @@ function fetchAndDisplayGroups(searchTerm = '') {
         </div>
 
         <div id="groups-content" class="table-container">
+            <div class="filter-container">
+                <select id="groupNameFilter">
+                    <option value="">All Group Names</option>
+                </select>
+                <select id="groupSymbolFilter">
+                    <option value="">All Group Symbols</option>
+                </select>
+                <button id="filterGroupsButton" class="btn btn-primary btn-sm">Filter</button>
+            </div>
             <table class="table table-striped" id="groups-table">
                 <thead>
                     <tr>
@@ -1675,6 +243,10 @@ function fetchAndDisplayGroups(searchTerm = '') {
         </div>
 
         <div id="orders-content" class="table-container">
+            <div class="search-container" id="orders-search">
+                <h2>Orders</h2>
+                <input type="text" placeholder="Search Orders" class="search-input" data-search-target="orders">
+            </div>
             <table class="table table-striped" id="orders-table">
                 <thead>
                     <tr>
@@ -1694,6 +266,28 @@ function fetchAndDisplayGroups(searchTerm = '') {
                         <th>Commission</th>
                         <th>Created At</th>
                         <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div id="money-requests-content" class="table-container">
+            <div class="search-container" id="money-requests-search">
+                <h2>Money Requests</h2>
+                <input type="text" placeholder="Search Money Requests" class="search-input" data-search-target="money-requests">
+            </div>
+            <table class="table table-striped" id="money-requests-table">
+                <thead>
+                    <tr>
+                        <th>Sr. No.</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone Number</th>
+                        <th>Request Amount</th>
+                        <th>Request Type</th>
+                        <th>Status</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1721,7 +315,20 @@ function fetchAndDisplayGroups(searchTerm = '') {
         const ordersTableBody = document.querySelector('#orders-table tbody');
         const moneyRequestsTableBody = document.querySelector('#money-requests-table tbody');
 
-        function createDropdown(customer) {
+
+        function initializePage() {
+            liveCustomerLink.classList.add('active'); // Add active class to live customer link
+            liveCustomersContent.style.display = 'block'; // Show live customers content
+            demoCustomersContent.style.display = 'none'; // Hide other content
+            groupsContent.style.display = 'none';
+            ordersContent.style.display = 'none';
+            moneyRequestsContent.style.display = 'none';
+            fetchAndDisplayLiveCustomers(); // Fetch and display live customers
+            populateDropdowns(); // Populate the dropdowns
+        }
+        initializePage();
+
+        function createDropdown(item, type) { // Add 'type' parameter
             const dropdown = document.createElement('div');
             dropdown.classList.add('dropdown');
 
@@ -1734,32 +341,135 @@ function fetchAndDisplayGroups(searchTerm = '') {
             const menu = document.createElement('ul');
             menu.classList.add('dropdown-menu');
 
-            const options = [
-                { label: 'Manage Funds', action: () => manageFunds(customer) },
-                { label: 'Trades', action: () => trades(customer) },
-                { label: 'User Setting', action: () => userSetting(customer) },
-                { label: 'User Kyc', action: () => userKyc(customer) },
-                { label: 'Block User', action: () => blockUser(customer) }
-            ];
+            if (type === 'liveCustomer') { // Conditionally add options
+                const options = [
+                    { label: 'Manage Funds', action: () => manageFunds(item) },
+                    { label: 'Trades', action: () => trades(item) },
+                    { label: 'User Setting', action: () => userSetting(item) },
+                    { label: 'User Kyc', action: () => userKyc(item) },
+                    { label: 'Block User', action: () => blockUser(item) }
+                ];
 
-            options.forEach(option => {
-                const item = document.createElement('li');
-                const link = document.createElement('a');
-                link.classList.add('dropdown-item');
-                link.href = '#';
-                link.textContent = option.label;
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    option.action();
+                options.forEach(option => {
+                    const itemElement = document.createElement('li');
+                    const link = document.createElement('a');
+                    link.classList.add('dropdown-item');
+                    link.href = '#';
+                    link.textContent = option.label;
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        option.action();
+                    });
+                    itemElement.appendChild(link);
+                    menu.appendChild(itemElement);
                 });
-                item.appendChild(link);
-                menu.appendChild(item);
-            });
+            } else if (type === 'demoCustomer') { // Different actions for demo
+                const itemElement = document.createElement('li');
+                itemElement.textContent = "No Demo Actions";
+                menu.appendChild(itemElement);
+            } else if (type === 'groups'){
+                const itemElement = document.createElement('li');
+                itemElement.textContent = "No Group Actions";
+                menu.appendChild(itemElement);
+            } else if(type === 'orders'){
+                const itemElement = document.createElement('li');
+                itemElement.textContent = "No Order Actions";
+                menu.appendChild(itemElement);
+            } else if(type === 'moneyRequests'){
+                const itemElement = document.createElement('li');
+                itemElement.textContent = "No Money Request Actions";
+                menu.appendChild(itemElement);
+            }
 
             dropdown.appendChild(button);
             dropdown.appendChild(menu);
 
             return dropdown;
+        }
+
+
+        function manageFunds(customer) {
+            // Create a simple modal div
+            const modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.top = '50%';
+            modal.style.left = '50%';
+            modal.style.transform = 'translate(-50%, -50%)';
+            modal.style.backgroundColor = 'white';
+            modal.style.padding = '20px';
+            modal.style.border = '1px solid black';
+            modal.style.zIndex = '1000'; // Ensure it's on top
+            modal.innerHTML = `
+                <h3>Manage Funds for ${customer.name}</h3>
+                <p>Customer ID: ${customer.id}</p>
+                <button id="closeModal">Close</button>
+            `;
+        
+            // Append the modal to the body
+            document.body.appendChild(modal);
+        
+            // Add event listener to the close button
+            modal.querySelector('#closeModal').addEventListener('click', () => {
+                document.body.removeChild(modal); // Remove the modal
+            });
+        }
+
+        function userSetting(customer) {
+            // Create the popup container
+            const popup = document.createElement('div');
+            popup.classList.add('user-settings-popup');
+        
+            // Populate the popup with user settings data
+            popup.innerHTML = `
+                <h2>User Settings</h2>
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" value="${customer.name || 'NA'}" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" value="${customer.email || 'NA'}" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" value="${customer.phone_number || 'NA'}" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="phone_number">Phone Number</label>
+                    <input type="tel" id="phone_number" value="${customer.phone_number || 'NA'}" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="bank_account_number">Bank Account Number</label>
+                    <input type="text" id="bank_account_number" value="${customer.bank_account_number || 'NA'}" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="bank_ifsc_code">Bank IFSC Code</label>
+                    <input type="text" id="bank_ifsc_code" value="${customer.bank_ifsc_code || 'NA'}" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="balance">Balance</label>
+                    <input type="number" id="balance" value="${customer.wallet_total_amount || 0}">
+                </div>
+                <div class="form-actions">
+                    <button class="add-balance">Add</button>
+                    <button class="cancel-balance">Cancel</button>
+                </div>
+            `;
+        
+            // Append the popup to the body
+            document.body.appendChild(popup);
+        
+            // Add event listener to close the popup
+            popup.querySelector('.cancel-balance').addEventListener('click', () => {
+                document.body.removeChild(popup);
+            });
+        
+            // Add event listener to update the balance
+            popup.querySelector('.add-balance').addEventListener('click', () => {
+                const newBalance = popup.querySelector('#balance').value;
+                updateBalance(customer.id, newBalance); // Call function to update balance
+                document.body.removeChild(popup);
+            });
         }
 
         async function fetchAndDisplayLiveCustomers(searchTerm = '') {
@@ -1768,14 +478,14 @@ function fetchAndDisplayGroups(searchTerm = '') {
             if (searchTerm) {
                 url += `?search=${searchTerm}`;
             }
-
+        
             try {
                 const response = await fetch(url, {
                     headers: {
                         'Authorization': `Bearer ${accessToken}`
                     }
                 });
-
+        
                 if (!response.ok) {
                     if (response.status === 401) {
                         window.location.href = '/static/accounts/login.html';
@@ -1783,10 +493,10 @@ function fetchAndDisplayGroups(searchTerm = '') {
                     }
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-
+        
                 const data = await response.json();
                 console.log("Live Customer Data:", data);
-
+        
                 liveCustomerTableBody.innerHTML = '';
 
                 data.forEach((customer, index) => {
@@ -1833,7 +543,7 @@ function fetchAndDisplayGroups(searchTerm = '') {
                     groupCell.textContent = customer.group || "NA";
 
                     const actionsCell = row.insertCell(10);
-                    const dropdown = createDropdown(customer);
+                    const dropdown = createDropdown(customer, 'liveCustomer');
                     actionsCell.appendChild(dropdown);
                 });
 
@@ -1853,14 +563,14 @@ function fetchAndDisplayGroups(searchTerm = '') {
             if (searchTerm) {
                 url += `?search=${searchTerm}`;
             }
-
+        
             try {
                 const response = await fetch(url, {
                     headers: {
                         'Authorization': `Bearer ${accessToken}`
                     }
                 });
-
+        
                 if (!response.ok) {
                     if (response.status === 401) {
                         window.location.href = '/static/accounts/login.html';
@@ -1868,7 +578,7 @@ function fetchAndDisplayGroups(searchTerm = '') {
                     }
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-
+        
                 const data = await response.json();
                 console.log("Demo Customer Data:", data);
                 demoCustomerTableBody.innerHTML = '';
@@ -1916,7 +626,7 @@ function fetchAndDisplayGroups(searchTerm = '') {
                     groupCell.textContent = customer.group || "NA";
 
                     const actionsCell = row.insertCell(10);
-                    const dropdown = createDropdown(customer);
+                    const dropdown = createDropdown(customer, 'demoCustomer');
                     actionsCell.appendChild(dropdown);
                 });
 
@@ -1930,12 +640,20 @@ function fetchAndDisplayGroups(searchTerm = '') {
             }
         }
 
-        async function fetchAndDisplayGroups(searchTerm = '') {
+        const groupNameFilter = document.getElementById('groupNameFilter');
+        const groupSymbolFilter = document.getElementById('groupSymbolFilter');
+
+        async function fetchAndDisplayGroups(groupName = '', groupSymbol = '') {
             const accessToken = localStorage.getItem('access_token');
             let url = '/accounts/api/groups/';
-            if (searchTerm) {
-                url += `?search=${searchTerm}`;
-            }
+
+            // Build query parameters for filtering
+            const queryParams = new URLSearchParams();
+            if (groupName) queryParams.append('name', groupName);
+            if (groupSymbol) queryParams.append('symbol', groupSymbol);
+
+            const queryString = queryParams.toString();
+            if (queryString) url += `?${queryString}`;
 
             try {
                 const response = await fetch(url, {
@@ -1993,7 +711,7 @@ function fetchAndDisplayGroups(searchTerm = '') {
                     maxLotCell.textContent = group.max_lot || "NA";
 
                     const actionsCell = row.insertCell(11);
-                    const dropdown = createDropdown();
+                    const dropdown = createDropdown(group, 'groups');
                     actionsCell.appendChild(dropdown);
                 });
 
@@ -2007,15 +725,69 @@ function fetchAndDisplayGroups(searchTerm = '') {
             }
         }
 
-        async function fetchAndDisplayOrders() {
+
+        // Function to populate dropdowns
+        async function populateDropdowns() {
             const accessToken = localStorage.getItem('access_token');
+            const url = '/accounts/api/groups/';
+
             try {
-                const response = await fetch('/accounts/api/orders/', {
+                const response = await fetch(url, {
                     headers: {
                         'Authorization': `Bearer ${accessToken}`
                     }
                 });
 
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                const groupNames = [...new Set(data.map(group => group.name))];
+                const groupSymbols = [...new Set(data.map(group => group.symbol))];
+
+                // Populate Group Name dropdown
+                groupNames.forEach(name => {
+                    const option = document.createElement('option');
+                    option.value = name;
+                    option.textContent = name;
+                    groupNameFilter.appendChild(option);
+                });
+
+                // Populate Group Symbol dropdown
+                groupSymbols.forEach(symbol => {
+                    const option = document.createElement('option');
+                    option.value = symbol;
+                    option.textContent = symbol;
+                    groupSymbolFilter.appendChild(option);
+                });
+            } catch (error) {
+                console.error("Error fetching groups for dropdown:", error);
+            }
+        }
+
+        // Event listener for filter button
+        document.getElementById('filterGroupsButton').addEventListener('click', () => {
+            const selectedName = groupNameFilter.value;
+            const selectedSymbol = groupSymbolFilter.value;
+            fetchAndDisplayGroups(selectedName, selectedSymbol);
+        });
+
+
+        async function fetchAndDisplayOrders(searchTerm = '') {
+            const accessToken = localStorage.getItem('access_token');
+            let url = '/accounts/api/orders/';
+            if (searchTerm) {
+                url += `?search=${searchTerm}`;
+            }
+        
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+        
                 if (!response.ok) {
                     if (response.status === 401) {
                         window.location.href = '/static/accounts/login.html';
@@ -2023,7 +795,7 @@ function fetchAndDisplayGroups(searchTerm = '') {
                     }
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-
+        
                 const data = await response.json();
                 console.log("Order Data:", data);
                 ordersTableBody.innerHTML = '';
@@ -2090,7 +862,7 @@ function fetchAndDisplayGroups(searchTerm = '') {
                     }
 
                     const actionsCell = row.insertCell(15);
-                    const dropdown = createDropdown();
+                    const dropdown = createDropdown(order, 'orders');
                     actionsCell.appendChild(dropdown);
                 });
 
@@ -2104,15 +876,20 @@ function fetchAndDisplayGroups(searchTerm = '') {
             }
         }
 
-        async function fetchAndDisplayMoneyRequests() {
+        async function fetchAndDisplayMoneyRequests(searchTerm = '') {
             const accessToken = localStorage.getItem('access_token');
+            let url = '/accounts/api/withdrawal-requests/';
+            if (searchTerm) {
+                url += `?search=${searchTerm}`;
+            }
+        
             try {
-                const response = await fetch('/accounts/api/withdrawal-requests/', {
+                const response = await fetch(url, {
                     headers: {
                         'Authorization': `Bearer ${accessToken}`
                     }
                 });
-
+        
                 if (!response.ok) {
                     if (response.status === 401) {
                         window.location.href = '/static/accounts/login.html';
@@ -2120,7 +897,7 @@ function fetchAndDisplayGroups(searchTerm = '') {
                     }
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-
+        
                 const data = await response.json();
                 console.log("Money Requests Data:", data);
                 moneyRequestsTableBody.innerHTML = '';
@@ -2151,7 +928,7 @@ function fetchAndDisplayGroups(searchTerm = '') {
                         statusCell.textContent = request.request_details.status || "NA";
 
                         const actionsCell = row.insertCell(7);
-                        const dropdown = createDropdown();
+                        const dropdown = createDropdown(request, 'moneyRequests');
                         actionsCell.appendChild(dropdown);
                     });
                 } else {
@@ -2168,7 +945,7 @@ function fetchAndDisplayGroups(searchTerm = '') {
             }
         }
 
-        fetchAndDisplayLiveCustomers();
+       fetchAndDisplayLiveCustomers();
 
         const logoutLink = document.getElementById('logout-link');
 
@@ -2178,6 +955,31 @@ function fetchAndDisplayGroups(searchTerm = '') {
             window.location.href = '/static/accounts/login.html';
         });
 
+        const searchInputs = document.querySelectorAll('.search-input');
+
+        searchInputs.forEach(input => {
+            input.addEventListener('input', () => {
+                const searchTerm = input.value;
+                const target = input.dataset.searchTarget;
+
+                if (target === 'live-customers') {
+                    fetchAndDisplayLiveCustomers(searchTerm);
+                } else if (target === 'demo-customers') {
+                    fetchAndDisplayDemoCustomers(searchTerm);
+                } else if (target === 'groups') {
+                    const groupNameFilter = document.getElementById('groupNameFilter').value;
+                    const groupSymbolFilter = document.getElementById('groupSymbolFilter').value;
+                    fetchAndDisplayGroups(searchTerm, groupNameFilter, groupSymbolFilter);
+                } else if (target === 'orders') {
+                    fetchAndDisplayOrders(searchTerm);
+                } else if (target === 'money-requests') {
+                    fetchAndDisplayMoneyRequests(searchTerm);
+                }
+            });
+        });
+
+        
+
         liveCustomerLink.addEventListener('click', (e) => {
             e.preventDefault();
             liveCustomerLink.classList.add('active');
@@ -2185,7 +987,17 @@ function fetchAndDisplayGroups(searchTerm = '') {
             groupsLink.classList.remove('active');
             ordersLink.classList.remove('active');
             moneyRequestsLink.classList.remove('active');
+        
+            // Hide all content divs first
+            liveCustomersContent.style.display = 'none';
+            demoCustomersContent.style.display = 'none';
+            groupsContent.style.display = 'none';
+            ordersContent.style.display = 'none';
             moneyRequestsContent.style.display = 'none';
+        
+            // Show the relevant content
+            liveCustomersContent.style.display = 'block';
+        
             fetchAndDisplayLiveCustomers();
         });
 
@@ -2196,9 +1008,20 @@ function fetchAndDisplayGroups(searchTerm = '') {
             groupsLink.classList.remove('active');
             ordersLink.classList.remove('active');
             moneyRequestsLink.classList.remove('active');
+        
+            // Hide all content divs first
+            liveCustomersContent.style.display = 'none';
+            demoCustomersContent.style.display = 'none';
+            groupsContent.style.display = 'none';
+            ordersContent.style.display = 'none';
             moneyRequestsContent.style.display = 'none';
+        
+            // Show the relevant content
+            demoCustomersContent.style.display = 'block';
+        
             fetchAndDisplayDemoCustomers();
         });
+
 
         groupsLink.addEventListener('click', (e) => {
             e.preventDefault();
@@ -2207,7 +1030,13 @@ function fetchAndDisplayGroups(searchTerm = '') {
             demoCustomerLink.classList.remove('active');
             ordersLink.classList.remove('active');
             moneyRequestsLink.classList.remove('active');
+    
+            liveCustomersContent.style.display = 'none';
+            demoCustomersContent.style.display = 'none';
+            ordersContent.style.display = 'none';
             moneyRequestsContent.style.display = 'none';
+    
+            groupsContent.style.display = 'block';
             fetchAndDisplayGroups();
         });
 
@@ -2218,7 +1047,13 @@ function fetchAndDisplayGroups(searchTerm = '') {
             demoCustomerLink.classList.remove('active');
             groupsLink.classList.remove('active');
             moneyRequestsLink.classList.remove('active');
+    
+            liveCustomersContent.style.display = 'none';
+            demoCustomersContent.style.display = 'none';
+            groupsContent.style.display = 'none';
             moneyRequestsContent.style.display = 'none';
+    
+            ordersContent.style.display = 'block';
             fetchAndDisplayOrders();
         });
 
@@ -2229,9 +1064,24 @@ function fetchAndDisplayGroups(searchTerm = '') {
             demoCustomerLink.classList.remove('active');
             groupsLink.classList.remove('active');
             ordersLink.classList.remove('active');
+    
+            liveCustomersContent.style.display = 'none';
+            demoCustomersContent.style.display = 'none';
+            groupsContent.style.display = 'none';
+            ordersContent.style.display = 'none';
+    
+            moneyRequestsContent.style.display = 'block';
             fetchAndDisplayMoneyRequests();
         });
 
+
+        searchInput.addEventListener('input', () => {
+            const searchTerm = searchInput.value;
+            fetchAndDisplayMoneyRequests(searchTerm); // Directly call the function
+        });
+
+
+        
         checkAuthentication();
 
         async function checkAuthentication() {
@@ -2250,7 +1100,7 @@ function fetchAndDisplayGroups(searchTerm = '') {
                 console.error("Authentication check failed:", error);
                 window.location.href = '/static/accounts/login.html';
             }
-        }
+        }groupsLink.add
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

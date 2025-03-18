@@ -9,8 +9,8 @@ class UserProfileLimitedSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = [
-            'name', 'email', 'phone_number', 'password', 'wallet_total_amount',
-            'status', 'group', 'leverage', 'account_number', 'created_at'
+            'id', 'name', 'email', 'phone_number', 'password', 'wallet_total_amount',
+            'status', 'group', 'leverage', 'account_number', 'created_at', 'bank_account_number', 'bank_ifsc_code'
         ]
 
 
