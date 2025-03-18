@@ -61,3 +61,20 @@ class WithdrawalRequestSerializer(serializers.ModelSerializer):
             return UserProfileWithdrawalRequestSerializer(user_profile).data
         except UserProfile.DoesNotExist:
             return None #or return empty dict, or handle as needed.
+
+
+class UserKycDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = [
+            'name',
+            'email',
+            'phone_number',
+            'state',
+            'city',
+            'pincode',
+            'address_proof',
+            'address_proof_image',
+            'id_proof',
+            'id_proof_image',
+        ]

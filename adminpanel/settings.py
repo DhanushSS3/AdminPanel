@@ -54,12 +54,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'adminpanel.urls'
 
-# your_django_project/settings.py
+
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # Add this line
+        'DIRS': [BASE_DIR / 'templates'], 
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -167,3 +167,22 @@ SIMPLE_JWT = {
 SESSION_COOKIE_SECURE = True  # Or False in development if not using HTTPS
 SESSION_COOKIE_SAMESITE = 'Lax'  # Or 'Strict' depending on your needs
 CSRF_COOKIE_SECURE = True   # Or False in development if not using HTTPS
+
+MEDIA_URL = '/images/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'images')
+
+# ... other settings ...
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',  # Adjust level as needed (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    },
+}

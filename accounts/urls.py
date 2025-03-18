@@ -1,7 +1,7 @@
-# accounts/urls.py
 from django.urls import path
 from . import views
 from rest_framework_simplejwt.views import TokenRefreshView
+
 
 urlpatterns = [
     path('api/live-user-profiles/', views.live_user_profiles, name='live_user_profiles'),
@@ -11,5 +11,9 @@ urlpatterns = [
     path('api/groups/', views.group_list, name='group-list'),
     path('api/orders/', views.order_list, name='order-list'),
     path('api/withdrawal-requests/', views.withdrawal_requests_list, name='withdrawal-request-list'),
-    path('api/customers/<int:customer_id>/update-balance/', views.update_customer_balance, name='update_customer_balance'),
+    path('api/customers/<int:customer_id>/update_customer_details/', views.update_customer_details, name='update_customer_details'),
+    path('api/user-kyc/<int:user_id>/', views.get_user_kyc_details, name='get_user_kyc_details'),
+    path('api/update-customer-funds/', views.update_customer_funds, name='update_customer_funds'),
+    path('api/wallet-transactions/<str:user_id>/', views.get_wallet_transactions, name='get_wallet_transactions'),
 ]
+

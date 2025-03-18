@@ -122,3 +122,26 @@ class WithdrawalRequest(models.Model):
 
     def __str__(self):
         return f"Withdrawal Request {self.id} - User: {self.user.name}"
+    
+
+
+class Wallet(models.Model):
+    user_id = models.CharField(max_length=255)
+    symbol = models.CharField(max_length=255, null=True, blank=True)
+    order_quanity = models.CharField(max_length=255, null=True, blank=True, default='0')
+    transaction_type = models.CharField(max_length=255)
+    is_approve = models.CharField(max_length=255, null=True, blank=True, default='0')
+    order_type = models.CharField(max_length=255, null=True, blank=True)
+    transaction_amount = models.CharField(max_length=255)
+    transaction_time = models.CharField(max_length=255)
+    trasaction_id = models.CharField(max_length=255, null=True, blank=True, default='0')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+    class Meta:
+        managed = False  
+        db_table = 'wallet'
+
+    def __str__(self):
+        return f"Wallet Transaction: {self.id} - User: {self.user_id}"
