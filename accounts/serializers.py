@@ -18,18 +18,19 @@ class UserProfileLimitedSerializer(serializers.ModelSerializer):
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
-        fields = [
-            'symbol',
-            'name',
-            'commision',
-            'commision_type',
-            'commision_value_type',
-            'margin',
-            'spread',
-            'deviation',
-            'min_lot',
-            'max_lot',
-        ]
+        # fields = [
+        #     'symbol',
+        #     'name',
+        #     'commision',
+        #     'commision_type',
+        #     'commision_value_type',
+        #     'margin',
+        #     'spread',
+        #     'deviation',
+        #     'min_lot',
+        #     'max_lot',
+        # ]
+        fields = '__all__'
 
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:

@@ -45,31 +45,33 @@ class UserProfile(models.Model):
 
 from django.db import models
 
+from django.db import models
+
 class Group(models.Model):
-    symbol = models.CharField(max_length=255)
+    symbol = models.CharField(max_length=255, null=True, blank=True)  # Nullable
     name = models.CharField(max_length=255)
-    swap_buy = models.CharField(max_length=255)  # varchar(255)
-    swap_sell = models.CharField(max_length=255) # varchar(255)
-    commision = models.CharField(max_length=255) # varchar(255)
+    swap_buy = models.CharField(max_length=255, default='0')
+    swap_sell = models.CharField(max_length=255, default='0')
+    commision = models.CharField(max_length=255)
     commision_type = models.CharField(max_length=255)
     commision_value_type = models.CharField(max_length=255)
-    margin = models.CharField(max_length=255) # varchar(255)
-    spread = models.CharField(max_length=255) # varchar(255)
-    deviation = models.CharField(max_length=255) # varchar(255)
-    min_lot = models.CharField(max_length=255) # varchar(255)
-    max_lot = models.CharField(max_length=255) # varchar(255)
+    margin = models.CharField(max_length=255)
+    spread = models.CharField(max_length=255)
+    deviation = models.CharField(max_length=255)
+    min_lot = models.CharField(max_length=255)
+    max_lot = models.CharField(max_length=255)
     type = models.CharField(max_length=255)
-    pips = models.CharField(max_length=255) # varchar(255)
-    spread_pip = models.CharField(max_length=255) # varchar(255)
-    image = models.CharField(max_length=255, blank=True, null=True) # varchar(255) nullable
-    show_points = models.CharField(max_length=255) # varchar(255)
-    pip_currency = models.CharField(max_length=255)
-    created_at = models.DateTimeField(auto_now_add=True)  # datetime(6)
-    updated_at = models.DateTimeField(auto_now=True)  # datetime(6)
+    pips = models.CharField(max_length=255)
+    spread_pip = models.CharField(max_length=255, null=True, blank=True) # Nullable
+    image = models.CharField(max_length=255, null=True, blank=True) # Nullable
+    show_points = models.CharField(max_length=255, null=True, blank=True)
+    pip_currency = models.CharField(max_length=255, null=True, blank=True, default='USD') # Nullable with default
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'group_creation'  # Specify the existing table name
-        managed = False  # Tell Django not to manage this table
+        db_table = 'group_creation'
+        managed = False
 
     def __str__(self):
         return self.name

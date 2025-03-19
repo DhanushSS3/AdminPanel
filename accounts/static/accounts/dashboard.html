@@ -142,6 +142,51 @@
             cursor: pointer;
         }
         
+        #orders-content .search-container,
+        #orders-content .mb-3,
+        #orders-content #filterOrdersButton {
+            display: block; /* Make each element a block-level element */
+            width: 100%; /* Ensure elements take full width */
+            margin-bottom: 10px; /* Add spacing between elements */
+        }
+
+        #orders-content .search-container {
+            display: grid;
+            grid-template-columns: auto auto auto auto;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        #orders-content .search-container > * {
+            margin: 0;
+        }
+        
+        #orders-content .search-container h2 {
+            grid-column: 1 / -1;
+            margin-bottom: 10px;
+        }
+        
+        #orders-content .search-container label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        #orders-content .search-container input,
+        #orders-content .search-container select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        
+        /* Increase the width of the select elements */
+        #orders-content .search-container select.form-select {
+            width: calc(100% - 20px); /* Adjust width for padding/border */
+            min-width: 150px; /* Set a minimum width */
+        }
+        
+        #orders-content .search-container .search-input {
+            width: calc(100% - 20px); /* Adjust width for padding/border */
+        }
     </style>
 </head>
 
@@ -210,6 +255,7 @@
             </table>
         </div>
 
+        
         <div id="groups-content" class="table-container">
             <div class="filter-container">
                 <select id="groupNameFilter">
@@ -219,6 +265,7 @@
                     <option value="">All Group Symbols</option>
                 </select>
                 <button id="filterGroupsButton" class="btn btn-primary btn-sm">Filter</button>
+                <button type="button" class="btn btn-primary" id="addGroupButton">Add Group</button>
             </div>
             <table class="table table-striped" id="groups-table">
                 <thead>
@@ -241,12 +288,120 @@
                 </tbody>
             </table>
         </div>
+        <div class="modal fade" id="addGroupModal" tabindex="-1" aria-labelledby="addGroupModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addGroupModalLabel">Create Group</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addGroupForm">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="symbol" class="form-label">Symbol Name</label>
+                                <select class="form-select" id="symbol" required>
+                                    <option value="">Select Symbol</option> </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="commissionAmount" class="form-label">Commission</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="commissionAmount" placeholder="Commission" required>
+                                    <select class="form-select" id="commissionInOut">
+                                        <option value="in">In</option>
+                                        <option value="out">Out</option>
+                                        <option value="every">Every Trade</option>
+                                    </select>
+                                    <select class="form-select" id="commissionValueType">
+                                        <option value="value">Value</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="symbolType" class="form-label">Symbol Type</label>
+                                <select class="form-select" id="symbolType" required>
+                                    <option value="">Select Symbol Type</option>
+                                    <option value="1">Currency Pair</option>
+                                    <option value="2">Commodities</option>
+                                    <option value="3">Indices</option>
+                                    <option value="4">Crypto</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="swapBuy" class="form-label">Swap Buy</label>
+                                <input type="text" class="form-control" id="swapBuy" placeholder="Swap Buy">
+                            </div>
+                            <div class="mb-3">
+                                <label for="swapSell" class="form-label">Swap Sell</label>
+                                <input type="text" class="form-control" id="swapSell" placeholder="Swap Sell">
+                            </div>
+                            <div class="mb-3">
+                                <label for="margin" class="form-label">Margin</label>
+                                <input type="number" class="form-control" id="margin" placeholder="Margin">
+                            </div>
+                            <div class="mb-3">
+                                <label for="spread" class="form-label">Spread</label>
+                                <input type="number" class="form-control" id="spread" placeholder="Spread">
+                            </div>
+                            <div class="mb-3">
+                                <label for="deviation" class="form-label">Deviation</label>
+                                <input type="number" class="form-control" id="deviation" placeholder="Deviation">
+                            </div>
+                            <div class="mb-3">
+                                <label for="minLot" class="form-label">Min Lot</label>
+                                <input type="number" class="form-control" id="minLot" placeholder="Min Lot">
+                            </div>
+                            <div class="mb-3">
+                                <label for="maxLot" class="form-label">Max Lot</label>
+                                <input type="number" class="form-control" id="maxLot" placeholder="Max Lot">
+                            </div>
+                            <div class="mb-3">
+                                <label for="pips" class="form-label">Pips</label>
+                                <input type="number" class="form-control" id="pips" placeholder="Pips">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="submitGroup">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div id="orders-content" class="table-container">
             <div class="search-container" id="orders-search">
                 <h2>Orders</h2>
-                <input type="text" placeholder="Search Orders" class="search-input" data-search-target="orders">
+                <div>
+                    <label for="orderStatusFilter">Order Status</label>
+                    <select class="form-select" id="orderStatusFilter">
+                        <option value="">All</option>
+                        <option value="open">Open</option>
+                        <option value="pending">Pending</option>
+                        <option value="close">Close</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="orderTypeFilter">Order Type</label>
+                    <select class="form-select" id="orderTypeFilter">
+                        <option value="">All</option>
+                        <option value="BUY">BUY</option>
+                        <option value="SELL">SELL</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="orderTimeFilter">Order Time</label>
+                    <input type="date" id="orderTimeFilter">
+                </div>
+                <div>
+                    <label for="ordersSearch">Search</label>
+                    <input type="text" placeholder="Search Orders" class="search-input" data-search-target="orders" id="ordersSearch">
+                </div>
             </div>
+            <button id="filterOrdersButton" class="btn btn-primary">Filter Orders</button>
             <table class="table table-striped" id="orders-table">
                 <thead>
                     <tr>
@@ -265,7 +420,6 @@
                         <th>Swap</th>
                         <th>Commission</th>
                         <th>Created At</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -367,6 +521,7 @@
                 </div>
             </div>
         </div>
+        
     </div>
 
     <script>
@@ -416,7 +571,63 @@
             }
             return cookieValue;
         }
-        function createDropdown(item, type) { // Add 'type' parameter
+
+        function createDropdown(item, type) {
+            const dropdown = document.createElement('div');
+            dropdown.classList.add('dropdown');
+        
+            const button = document.createElement('button');
+            button.classList.add('btn', 'btn-sm', 'dropdown-toggle');
+            button.innerHTML = '&#9776;';
+            button.setAttribute('data-bs-toggle', 'dropdown');
+            button.setAttribute('aria-expanded', 'false');
+        
+            const menu = document.createElement('ul');
+            menu.classList.add('dropdown-menu');
+        
+            if (type === 'liveCustomer' || type === 'demoCustomer') {
+                let options = [
+                    { label: 'Manage Funds', action: () => manageFunds(item) },
+                    { label: 'Trades', action: () => trades(item) },
+                    { label: 'User Setting', action: () => userSetting(item) },
+                    { label: 'Block User', action: () => blockUser(item) }
+                ];
+        
+                if (type === 'liveCustomer') {
+                    options.push({ label: 'User Kyc', action: () => userKyc(item) });
+                }
+        
+                options.forEach(option => {
+                    const itemElement = document.createElement('li');
+                    const link = document.createElement('a');
+                    link.classList.add('dropdown-item');
+                    link.href = '#';
+                    link.textContent = option.label;
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        option.action();
+                    });
+                    itemElement.appendChild(link);
+                    menu.appendChild(itemElement);
+                });
+            } else if (type === 'groups') {
+                const itemElement = document.createElement('li');
+                itemElement.textContent = "No Group Actions";
+                menu.appendChild(itemElement);
+            
+            } else if (type === 'moneyRequests') {
+                const itemElement = document.createElement('li');
+                itemElement.textContent = "No Money Request Actions";
+                menu.appendChild(itemElement);
+            }
+        
+            dropdown.appendChild(button);
+            dropdown.appendChild(menu);
+        
+            return dropdown;
+        }
+
+        /*function createDropdown(item, type) { // Add 'type' parameter
             const dropdown = document.createElement('div');
             dropdown.classList.add('dropdown');
 
@@ -473,7 +684,7 @@
             dropdown.appendChild(menu);
 
             return dropdown;
-        }
+        }*/
 
 
 
@@ -996,10 +1207,120 @@
             } catch (error) {
                 console.error("Error fetching demo customers:", error);
             }
+            
         }
 
         const groupNameFilter = document.getElementById('groupNameFilter');
         const groupSymbolFilter = document.getElementById('groupSymbolFilter');
+
+        // ... (Your existing code)
+
+        document.getElementById('addGroupButton').addEventListener('click', async () => {
+            const addGroupModal = new bootstrap.Modal(document.getElementById('addGroupModal'));
+            addGroupModal.show();
+        
+            // Populate the symbol dropdown in the modal
+            const symbols = await populateDropdowns();
+            const symbolDropdown = document.getElementById('symbol');
+        
+            symbolDropdown.innerHTML = '<option value="">Select Symbol</option>'; // Reset dropdown
+        
+            symbols.forEach(symbol => {
+                const option = document.createElement('option');
+                option.value = symbol;
+                option.textContent = symbol;
+                symbolDropdown.appendChild(option);
+            });
+        });
+
+        document.getElementById('submitGroup').addEventListener('click', async () => {
+            const accessToken = localStorage.getItem('access_token');
+            const form = document.getElementById('addGroupForm');
+        
+            // Clear any previous warnings
+            document.getElementById('warningMessage')?.remove();
+        
+            // Validation
+            const requiredFields = [
+                { id: 'symbol', label: 'Symbol Name' },
+                { id: 'name', label: 'Name' },
+                { id: 'commissionAmount', label: 'Commission' },
+                { id: 'symbolType', label: 'Symbol Type' },
+                { id: 'swapBuy', label: 'Swap Buy' },
+                { id: 'swapSell', label: 'Swap Sell' },
+                { id: 'margin', label: 'Margin' },
+                { id: 'spread', label: 'Spread' },
+                { id: 'deviation', label: 'Deviation' },
+                { id: 'minLot', label: 'Min Lot' },
+                { id: 'maxLot', label: 'Max Lot' },
+                { id: 'pips', label: 'Pips' },
+            ];
+        
+            let hasErrors = false;
+            for (const field of requiredFields) {
+                const value = document.getElementById(field.id).value;
+                if (!value) {
+                    hasErrors = true;
+                    break;
+                }
+            }
+        
+            if (hasErrors) {
+                const warningDiv = document.createElement('div');
+                warningDiv.id = 'warningMessage';
+                warningDiv.className = 'alert alert-danger mt-3';
+                warningDiv.textContent = 'Please fill in all required fields.';
+                form.appendChild(warningDiv);
+                return; // Stop submission
+            }
+        
+            // If all fields are filled, proceed with submission
+            const groupData = {
+                symbol: form.symbol.value,
+                name: form.name.value,
+                commision: document.getElementById('commissionAmount').value,
+                commision_type: document.getElementById('commissionInOut').value,
+                commision_value_type: document.getElementById('commissionValueType').value,
+                type: document.getElementById('symbolType').value,
+                swap_buy: form.swapBuy.value,
+                swap_sell: form.swapSell.value,
+                margin: form.margin.value,
+                spread: form.spread.value,
+                deviation: form.deviation.value,
+                min_lot: form.minLot.value,
+                max_lot: form.maxLot.value,
+                pips: form.pips.value,
+                spread_pip: "", // Add default value, or get value from form if needed
+                show_points: "", // Add this line!
+                pip_currency: "",
+            };
+        
+            try {
+                const response = await fetch('/accounts/api/groups/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`,
+                        'X-CSRFToken': getCookie('csrftoken'), // Assuming you have getCookie function
+                    },
+                    body: JSON.stringify(groupData),
+                });
+        
+                if (response.ok) {
+                    alert('Group added successfully!');
+                    const addGroupModal = bootstrap.Modal.getInstance(document.getElementById('addGroupModal'));
+                    addGroupModal.hide();
+                    form.reset();
+                    fetchAndDisplayGroups(groupNameFilter.value, groupSymbolFilter.value); // Refresh the table
+                } else {
+                    const errorData = await response.json();
+                    alert(`Error adding group: ${errorData.error || response.statusText}`);
+                }
+            } catch (error) {
+                console.error('Error adding group:', error);
+                alert('An error occurred while adding the group.');
+            }
+        });
 
         async function fetchAndDisplayGroups(groupName = '', groupSymbol = '') {
             const accessToken = localStorage.getItem('access_token');
@@ -1088,22 +1409,22 @@
         async function populateDropdowns() {
             const accessToken = localStorage.getItem('access_token');
             const url = '/accounts/api/groups/';
-
+        
             try {
                 const response = await fetch(url, {
                     headers: {
                         'Authorization': `Bearer ${accessToken}`
                     }
                 });
-
+        
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-
+        
                 const data = await response.json();
                 const groupNames = [...new Set(data.map(group => group.name))];
                 const groupSymbols = [...new Set(data.map(group => group.symbol))];
-
+        
                 // Populate Group Name dropdown
                 groupNames.forEach(name => {
                     const option = document.createElement('option');
@@ -1111,7 +1432,7 @@
                     option.textContent = name;
                     groupNameFilter.appendChild(option);
                 });
-
+        
                 // Populate Group Symbol dropdown
                 groupSymbols.forEach(symbol => {
                     const option = document.createElement('option');
@@ -1119,8 +1440,11 @@
                     option.textContent = symbol;
                     groupSymbolFilter.appendChild(option);
                 });
+        
+                return groupSymbols; // Return the symbol list
             } catch (error) {
                 console.error("Error fetching groups for dropdown:", error);
+                return []; // Return an empty array in case of error
             }
         }
 
@@ -1131,13 +1455,20 @@
             fetchAndDisplayGroups(selectedName, selectedSymbol);
         });
 
+        
 
-        async function fetchAndDisplayOrders(searchTerm = '') {
+        async function fetchAndDisplayOrders(searchTerm = '', orderStatus = '', orderType = '') {
+            console.log("Fetching orders with:", searchTerm, orderStatus, orderType);
             const accessToken = localStorage.getItem('access_token');
             let url = '/accounts/api/orders/';
-            if (searchTerm) {
-                url += `?search=${searchTerm}`;
-            }
+            const queryParams = new URLSearchParams();
+        
+            if (searchTerm) queryParams.append('search', searchTerm);
+            if (orderStatus) queryParams.append('order_status', orderStatus);
+            if (orderType) queryParams.append('order_type', orderType);
+        
+            const queryString = queryParams.toString();
+            if (queryString) url += `?${queryString}`;
         
             try {
                 const response = await fetch(url, {
@@ -1157,7 +1488,7 @@
                 const data = await response.json();
                 console.log("Order Data:", data);
                 ordersTableBody.innerHTML = '';
-
+        
                 data.forEach((order, index) => {
                     const row = ordersTableBody.insertRow();
 
@@ -1218,10 +1549,6 @@
                     } else {
                         createdAtCell.textContent = "NA";
                     }
-
-                    const actionsCell = row.insertCell(15);
-                    const dropdown = createDropdown(order, 'orders');
-                    actionsCell.appendChild(dropdown);
                 });
 
                 liveCustomersContent.style.display = 'none';
@@ -1233,6 +1560,15 @@
                 console.error("Error fetching orders:", error);
             }
         }
+        document.getElementById('filterOrdersButton').addEventListener('click', () => {
+            const searchTerm = document.querySelector('.search-input[data-search-target="orders"]').value;
+            const orderStatus = document.getElementById('orderStatusFilter').value;
+            const orderType = document.getElementById('orderTypeFilter').value;
+            console.log("Search Term:", searchTerm);
+            console.log("Order Status:", orderStatus);
+            console.log("Order Type:", orderType);
+            fetchAndDisplayOrders(searchTerm, orderStatus, orderType);
+        });
 
         async function fetchAndDisplayMoneyRequests(searchTerm = '') {
             const accessToken = localStorage.getItem('access_token');
@@ -1438,7 +1774,6 @@
             fetchAndDisplayMoneyRequests(searchTerm); // Directly call the function
         });
 
-
         
         checkAuthentication();
 
@@ -1458,7 +1793,9 @@
                 console.error("Authentication check failed:", error);
                 window.location.href = '/static/accounts/login.html';
             }
-        }groupsLink.add
+        }
+
+
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     

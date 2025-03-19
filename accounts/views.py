@@ -52,8 +52,12 @@ def demo_user_profiles(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def order_list(request):
-    search = request.query_params.get('search')
+
     orders = Order.objects.all().order_by('-created_at')
+    search= request.query_params.get('search')
+    order_status = request.query_params.get('order_status')
+    order_type = request.query_params.get('order_type')
+    order_time_str = request.GET.get('order_time')
     if search:
         orders = orders.filter(
             Q(order_id__icontains=search) |
@@ -64,6 +68,20 @@ def order_list(request):
         )
     else:
         pass
+    if order_status:
+        orders = orders.filter(order_status=order_status)
+
+    if order_type:
+        orders = orders.filter(order_type=order_type)
+
+    if order_time_str:
+        try:
+            order_time = datetime.strptime(order_time_str, '%Y-%m-%d').date()
+            orders = orders.filter(created_at__date=order_time) # Filtering based on created_at__date
+        except ValueError:
+            return Response({'error': 'Invalid date format'}, status=400)
+    
+    
     serializer = OrderSerializer(orders, many=True)
     return Response(serializer.data)
 
@@ -138,23 +156,30 @@ from rest_framework.response import Response
 from .models import Group  # Assuming your Group model is in the same app
 from .serializers import GroupSerializer  # Assuming you have a GroupSerializer
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
-def group_list(request):
-    groups = Group.objects.all()
+def group_list_create(request):
+    if request.method == 'GET':
+        groups = Group.objects.all()
 
-    # Get query parameters for filtering
-    group_name = request.query_params.get('name', None)
-    group_symbol = request.query_params.get('symbol', None)
+        # Filtering logic
+        name = request.query_params.get('name')
+        symbol = request.query_params.get('symbol')
 
-    # Apply filters if provided
-    if group_name:
-        groups = groups.filter(name=group_name)
-    if group_symbol:
-        groups = groups.filter(symbol=group_symbol)
+        if name:
+            groups = groups.filter(name__icontains=name)  # Case-insensitive contains
+        if symbol:
+            groups = groups.filter(symbol__icontains=symbol)
 
-    serializer = GroupSerializer(groups, many=True)
-    return Response(serializer.data)
+        serializer = GroupSerializer(groups, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        serializer = GroupSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -302,3 +327,5 @@ def get_wallet_transactions(request, user_id):
         return Response(data)
     except UserProfile.DoesNotExist:
         return Response({'error': 'User profile not found.'}, status=status.HTTP_404_NOT_FOUND)
+    
+
