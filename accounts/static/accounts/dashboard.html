@@ -197,7 +197,7 @@
         <a href="#" id="demo-customer-link">Demo Customer</a>
         <a href="#" id="groups-link">Group</a>
         <a href="#" id="orders-link">Order</a>
-        <a href="#" id="money-requests-link">Money Requests</a>
+        <!--<a href="#" id="money-requests-link">Money Requests</a>-->
         <a href="#" id="logout-link">Logout</a>
     </div>
 
@@ -227,6 +227,40 @@
                 <tbody>
                 </tbody>
             </table>
+        </div>
+
+        <div class="modal fade" id="userTradesModal" tabindex="-1" aria-labelledby="userTradesModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="userTradesModalLabel">User Trades</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="userTradesModalBody">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Sr No</th>
+                                    <th>User Name</th>
+                                    <th>Email</th>
+                                    <th>Phone Number</th>
+                                    <th>Order Id</th>
+                                    <th>Order Status</th>
+                                    <th>Company Name</th>
+                                    <th>Order Type</th>
+                                    <th>Open Price</th>
+                                    <th>Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div id="demo-customers-content" class="table-container">
@@ -426,7 +460,7 @@
                 </tbody>
             </table>
         </div>
-        <div id="money-requests-content" class="table-container">
+       <!-- <div id="money-requests-content" class="table-container">
             <div class="search-container" id="money-requests-search">
                 <h2>Money Requests</h2>
                 <input type="text" placeholder="Search Money Requests" class="search-input" data-search-target="money-requests">
@@ -447,7 +481,7 @@
                 <tbody>
                 </tbody>
             </table>
-        </div>
+        </div>-->
     </div>
     <div class="modal fade" id="userKycModal" tabindex="-1" aria-labelledby="userKycModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -522,6 +556,7 @@
             </div>
         </div>
         
+        
     </div>
 
     <script>
@@ -529,9 +564,9 @@
         const demoCustomerLink = document.getElementById('demo-customer-link');
         const groupsLink = document.getElementById('groups-link');
         const ordersLink = document.getElementById('orders-link');
-        const moneyRequestsLink = document.getElementById('money-requests-link');
+        /*const moneyRequestsLink = document.getElementById('money-requests-link');*/
 
-        const moneyRequestsContent = document.getElementById('money-requests-content');
+        /*const moneyRequestsContent = document.getElementById('money-requests-content');*/
         const liveCustomersContent = document.getElementById('live-customers-content');
         const demoCustomersContent = document.getElementById('demo-customers-content');
         const groupsContent = document.getElementById('groups-content');
@@ -541,7 +576,7 @@
         const demoCustomerTableBody = document.querySelector('#demo-customer-table tbody');
         const groupsTableBody = document.querySelector('#groups-table tbody');
         const ordersTableBody = document.querySelector('#orders-table tbody');
-        const moneyRequestsTableBody = document.querySelector('#money-requests-table tbody');
+        /*const moneyRequestsTableBody = document.querySelector('#money-requests-table tbody');*/
 
 
         function initializePage() {
@@ -550,7 +585,7 @@
             demoCustomersContent.style.display = 'none'; // Hide other content
             groupsContent.style.display = 'none';
             ordersContent.style.display = 'none';
-            moneyRequestsContent.style.display = 'none';
+           /* moneyRequestsContent.style.display = 'none';*/
             fetchAndDisplayLiveCustomers(); // Fetch and display live customers
             populateDropdowns(); // Populate the dropdowns
         }
@@ -614,19 +649,19 @@
                 const itemElement = document.createElement('li');
                 itemElement.textContent = "No Group Actions";
                 menu.appendChild(itemElement);
-            
-            } else if (type === 'moneyRequests') {
+        
+            } /*else if (type === 'moneyRequests') {
                 const itemElement = document.createElement('li');
                 itemElement.textContent = "No Money Request Actions";
                 menu.appendChild(itemElement);
-            }
+            }*/
         
             dropdown.appendChild(button);
             dropdown.appendChild(menu);
         
             return dropdown;
         }
-
+        
         /*function createDropdown(item, type) { // Add 'type' parameter
             const dropdown = document.createElement('div');
             dropdown.classList.add('dropdown');
@@ -1003,7 +1038,13 @@
         
             try {
                 console.log("Fetching KYC details for user ID:", userId);
-                const response = await fetch(`/accounts/api/user-kyc/${userId}/`);
+                /*const response = await fetch(`/accounts/api/user-kyc/${userId}/`);*/
+                const accessToken = localStorage.getItem('access_token');
+                const response = await fetch(`/accounts/api/user-kyc/${userId}/`, {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                    },
+                });
                 console.log("API response status:", response.status); // Log the response status
         
                 if (!response.ok) {
@@ -1039,6 +1080,53 @@
                 console.error('Error fetching KYC details:', error);
                 modalBody.innerHTML = 'Failed to load KYC details (network error).';
             }
+        }
+
+        function trades(customer) {
+            const userId = customer.id;
+            const accessToken = localStorage.getItem('access_token');
+        
+            fetch(`/accounts/api/user-trades/${userId}/`, {
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error('Error fetching user trades:', data.error);
+                    return;
+                }
+        
+                const user = data.user;
+                const orders = data.orders;
+        
+                const tableBody = document.querySelector('#userTradesModalBody tbody');
+                tableBody.innerHTML = '';
+        
+                orders.forEach((order, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${user.name}</td>
+                        <td>${user.email}</td>
+                        <td>${user.phone_number}</td>
+                        <td>${order.order_id}</td>
+                        <td>${order.order_status}</td>
+                        <td>${order.order_company_name}</td>
+                        <td>${order.order_type}</td>
+                        <td>${order.order_price}</td>
+                        <td>${order.order_quantity}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+        
+                const userTradesModal = new bootstrap.Modal(document.getElementById('userTradesModal'));
+                userTradesModal.show();
+            })
+            .catch(error => {
+                console.error('Error fetching user trades:', error);
+            });
         }
 
         async function fetchAndDisplayLiveCustomers(searchTerm = '') {
@@ -1120,7 +1208,7 @@
                 demoCustomersContent.style.display = 'none';
                 groupsContent.style.display = 'none';
                 ordersContent.style.display = 'none';
-                moneyRequestsContent.style.display = 'none';
+                /*moneyRequestsContent.style.display = 'none';*/
             } catch (error) {
                 console.error("Error fetching live customers:", error);
             }
@@ -1203,7 +1291,7 @@
                 demoCustomersContent.style.display = 'block';
                 groupsContent.style.display = 'none';
                 ordersContent.style.display = 'none';
-                moneyRequestsContent.style.display = 'none';
+                /*moneyRequestsContent.style.display = 'none';*/
             } catch (error) {
                 console.error("Error fetching demo customers:", error);
             }
@@ -1398,7 +1486,7 @@
                 demoCustomersContent.style.display = 'none';
                 groupsContent.style.display = 'block';
                 ordersContent.style.display = 'none';
-                moneyRequestsContent.style.display = 'none';
+               /* moneyRequestsContent.style.display = 'none';*/
             } catch (error) {
                 console.error("Error fetching groups:", error);
             }
@@ -1555,7 +1643,7 @@
                 demoCustomersContent.style.display = 'none';
                 groupsContent.style.display = 'none';
                 ordersContent.style.display = 'block';
-                moneyRequestsContent.style.display = 'none';
+               /* moneyRequestsContent.style.display = 'none';*/
             } catch (error) {
                 console.error("Error fetching orders:", error);
             }
@@ -1570,7 +1658,7 @@
             fetchAndDisplayOrders(searchTerm, orderStatus, orderType);
         });
 
-        async function fetchAndDisplayMoneyRequests(searchTerm = '') {
+        /*async function fetchAndDisplayMoneyRequests(searchTerm = '') {
             const accessToken = localStorage.getItem('access_token');
             let url = '/accounts/api/withdrawal-requests/';
             if (searchTerm) {
@@ -1637,7 +1725,7 @@
             } catch (error) {
                 console.error("Error fetching money requests:", error);
             }
-        }
+        }*/
 
        fetchAndDisplayLiveCustomers();
 
@@ -1666,9 +1754,9 @@
                     fetchAndDisplayGroups(searchTerm, groupNameFilter, groupSymbolFilter);
                 } else if (target === 'orders') {
                     fetchAndDisplayOrders(searchTerm);
-                } else if (target === 'money-requests') {
+                } /*else if (target === 'money-requests') {
                     fetchAndDisplayMoneyRequests(searchTerm);
-                }
+                }*/
             });
         });
 
@@ -1680,14 +1768,14 @@
             demoCustomerLink.classList.remove('active');
             groupsLink.classList.remove('active');
             ordersLink.classList.remove('active');
-            moneyRequestsLink.classList.remove('active');
+            /*moneyRequestsLink.classList.remove('active');*/
         
             // Hide all content divs first
             liveCustomersContent.style.display = 'none';
             demoCustomersContent.style.display = 'none';
             groupsContent.style.display = 'none';
             ordersContent.style.display = 'none';
-            moneyRequestsContent.style.display = 'none';
+            /*moneyRequestsContent.style.display = 'none';*/
         
             // Show the relevant content
             liveCustomersContent.style.display = 'block';
@@ -1701,14 +1789,14 @@
             liveCustomerLink.classList.remove('active');
             groupsLink.classList.remove('active');
             ordersLink.classList.remove('active');
-            moneyRequestsLink.classList.remove('active');
+            /*moneyRequestsLink.classList.remove('active');*/
         
             // Hide all content divs first
             liveCustomersContent.style.display = 'none';
             demoCustomersContent.style.display = 'none';
             groupsContent.style.display = 'none';
             ordersContent.style.display = 'none';
-            moneyRequestsContent.style.display = 'none';
+            /*moneyRequestsContent.style.display = 'none';*/
         
             // Show the relevant content
             demoCustomersContent.style.display = 'block';
@@ -1723,12 +1811,12 @@
             liveCustomerLink.classList.remove('active');
             demoCustomerLink.classList.remove('active');
             ordersLink.classList.remove('active');
-            moneyRequestsLink.classList.remove('active');
+            /*moneyRequestsLink.classList.remove('active');*/
     
             liveCustomersContent.style.display = 'none';
             demoCustomersContent.style.display = 'none';
             ordersContent.style.display = 'none';
-            moneyRequestsContent.style.display = 'none';
+            /*moneyRequestsContent.style.display = 'none';*/
     
             groupsContent.style.display = 'block';
             fetchAndDisplayGroups();
@@ -1740,18 +1828,18 @@
             liveCustomerLink.classList.remove('active');
             demoCustomerLink.classList.remove('active');
             groupsLink.classList.remove('active');
-            moneyRequestsLink.classList.remove('active');
+            /*moneyRequestsLink.classList.remove('active');*/
     
             liveCustomersContent.style.display = 'none';
             demoCustomersContent.style.display = 'none';
             groupsContent.style.display = 'none';
-            moneyRequestsContent.style.display = 'none';
+           /* moneyRequestsContent.style.display = 'none';*/
     
             ordersContent.style.display = 'block';
             fetchAndDisplayOrders();
         });
 
-        moneyRequestsLink.addEventListener('click', (e) => {
+       /* moneyRequestsLink.addEventListener('click', (e) => {
             e.preventDefault();
             moneyRequestsLink.classList.add('active');
             liveCustomerLink.classList.remove('active');
@@ -1772,7 +1860,7 @@
         searchInput.addEventListener('input', () => {
             const searchTerm = searchInput.value;
             fetchAndDisplayMoneyRequests(searchTerm); // Directly call the function
-        });
+        });*/
 
         
         checkAuthentication();

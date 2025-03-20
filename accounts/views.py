@@ -150,11 +150,7 @@ def withdrawal_requests_list(request):
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from .models import Group  # Assuming your Group model is in the same app
-from .serializers import GroupSerializer  # Assuming you have a GroupSerializer
+
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
@@ -233,7 +229,7 @@ def login_view(request):
 import logging
 logger = logging.getLogger(__name__)
 @api_view(['GET'])
-@permission_classes([])
+@permission_classes([IsAuthenticated])
 def get_user_kyc_details(request, user_id):
     """Fetches user KYC details by user ID."""
 
@@ -329,3 +325,30 @@ def get_wallet_transactions(request, user_id):
         return Response({'error': 'User profile not found.'}, status=status.HTTP_404_NOT_FOUND)
     
 
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def user_trades(request, user_id): # Added user_id parameter
+    """
+    Retrieve trades for a specific user, joining UserProfile and Order tables.
+    """
+
+    try:
+        user_profile = UserProfile.objects.get(pk=user_id)
+    except UserProfile.DoesNotExist:
+        return Response({'error': 'User profile not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    try:
+        orders = Order.objects.filter(order_user_id=user_profile.id)
+        order_serializer = OrderSerializer(orders, many=True)
+        user_serializer = UserProfileWithdrawalRequestSerializer(user_profile)
+
+        response_data = {
+            'user': user_serializer.data,
+            'orders': order_serializer.data,
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({'error': f'An unexpected error occurred: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
