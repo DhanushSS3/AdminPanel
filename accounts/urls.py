@@ -16,6 +16,7 @@ urlpatterns = [
     path('api/update-customer-funds/', views.update_customer_funds, name='update_customer_funds'),
     path('api/wallet-transactions/<str:user_id>/', views.get_wallet_transactions, name='get_wallet_transactions'),
     path('api/user-trades/<int:user_id>/', views.user_trades, name='user_trades'),
+    path('api/block-unblock/', views.block_unblock_user, name='block_unblock_user'),
 
 ]
 

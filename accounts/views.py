@@ -4,14 +4,20 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from .models import UserProfile, Group, Order, WithdrawalRequest
 from .serializers import UserProfileLimitedSerializer, GroupSerializer, OrderSerializer, WithdrawalRequestSerializer, UserProfileWithdrawalRequestSerializer
-from django.shortcuts import render
 from rest_framework import status
 from django.contrib.auth import authenticate, login
 from rest_framework_simplejwt.tokens import RefreshToken
-
+from django.shortcuts import get_object_or_404
 from django.conf import settings
 from django.db.models import Q
 from .serializers import UserKycDetailsSerializer
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+from .models import UserProfile, Wallet  # Import the Wallet model
+from django.db.models import F
+from datetime import datetime
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -256,15 +262,6 @@ def get_user_kyc_details(request, user_id):
     
 
 
-from django.db.models import F
-
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework import status
-from .models import UserProfile, Wallet  # Import the Wallet model
-from django.db.models import F
-from datetime import datetime
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -352,3 +349,26 @@ def user_trades(request, user_id): # Added user_id parameter
 
     except Exception as e:
         return Response({'error': f'An unexpected error occurred: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def block_unblock_user(request):
+    user_id = request.data.get('id') 
+    new_status = request.data.get('status')
+
+    if not user_id or new_status is None:
+        return Response({'message': 'Missing id or status'}, status=status.HTTP_400_BAD_REQUEST)
+
+    user_profile = get_object_or_404(UserProfile, pk=user_id)
+
+    if new_status not in [0, 1]:
+        return Response({'message': 'Invalid status value'}, status=status.HTTP_400_BAD_REQUEST)
+
+    user_profile.status = new_status
+    user_profile.save()
+
+    return Response({'message': 'User status updated successfully'}, status=status.HTTP_200_OK)
