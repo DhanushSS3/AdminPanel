@@ -608,6 +608,7 @@
         }
 
         function createDropdown(item, type) {
+            console.log("Item status in createDropdown:", item.status)
             const dropdown = document.createElement('div');
             dropdown.classList.add('dropdown');
         
@@ -724,11 +725,21 @@
 
 
         async function blockUnblockUser(item) {
-            const userId = item.id; // Correctly uses item.id
+            console.log(item)
+            const userId = item.id;
             const currentStatus = item.status;
         
-            const newStatus = currentStatus === 1 ? 0 : 1;
-            const action = newStatus === 0 ? "block" : "unblock";
+            let newStatus;
+            let action;
+        
+            if (currentStatus === "1") { // User is active
+                newStatus = 0; // Block the user
+                action = "block";
+            } else { // User is blocked (or any other status)
+                newStatus = 1; // Unblock the user
+                action = "unblock";
+            }
+        
             const confirmationMessage = `Are you sure you want to ${action} this user?`;
         
             if (!confirm(confirmationMessage)) {
@@ -748,7 +759,7 @@
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${accessToken}`,
                     },
-                    body: JSON.stringify({ id: userId, status: newStatus }), // correctly using id
+                    body: JSON.stringify({ id: userId, status: newStatus }),
                 });
         
                 if (!response.ok) {
@@ -759,7 +770,11 @@
         
                 alert(`User ${action}ed successfully.`);
                 item.status = newStatus;
-                // ... UI update logic
+        
+                // Add UI update logic here, for example:
+                // Update the table cell displaying the status
+                // Or reload the user list
+        
             } catch (error) {
                 console.error(`Error ${action}ing user:`, error);
                 alert(`An error occurred while ${action}ing user.`);
@@ -1197,55 +1212,55 @@
                 console.log("Live Customer Data:", data);
         
                 liveCustomerTableBody.innerHTML = '';
-
+        
                 data.forEach((customer, index) => {
                     const row = liveCustomerTableBody.insertRow();
-
+        
                     const srNoCell = row.insertCell(0);
                     srNoCell.textContent = index + 1;
-
+        
                     const nameCell = row.insertCell(1);
                     nameCell.textContent = customer.name || "NA";
-
+        
                     const emailCell = row.insertCell(2);
                     emailCell.textContent = customer.email || "NA";
-
+        
                     const phoneCell = row.insertCell(3);
                     phoneCell.textContent = customer.phone_number || "NA";
-
+        
                     const walletAmountCell = row.insertCell(4);
                     walletAmountCell.textContent = customer.wallet_total_amount != null ? customer.wallet_total_amount : "NA";
-
+        
                     const accountNumberCell = row.insertCell(5);
                     accountNumberCell.textContent = customer.account_number || "NA";
-
+        
                     const accountStatusCell = row.insertCell(6);
-                    accountStatusCell.textContent = customer.status || "NA";
-
+                    // Display status as "Blocked" or "Active"
+                    accountStatusCell.textContent = customer.status === 0 ? "Blocked" : "Active";
+        
                     const leverageCell = row.insertCell(7);
                     leverageCell.textContent = customer.leverage || "NA";
-
-
+        
                     const registrationDateCell = row.insertCell(8);
                     if (customer.created_at) {
                         const registrationDate = new Date(customer.created_at);
                         const day = String(registrationDate.getDate()).padStart(2, '0');
-                        const month = String(registrationDate.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+                        const month = String(registrationDate.getMonth() + 1).padStart(2, '0');
                         const year = registrationDate.getFullYear();
-                        const formattedDate = `${day}-${month}-${year}`; // Correct format: DD-MM-YYYY
+                        const formattedDate = `${day}-${month}-${year}`;
                         registrationDateCell.textContent = formattedDate;
                     } else {
                         registrationDateCell.textContent = "NA";
                     }
-
+        
                     const groupCell = row.insertCell(9);
                     groupCell.textContent = customer.group || "NA";
-
+        
                     const actionsCell = row.insertCell(10);
                     const dropdown = createDropdown(customer, 'liveCustomer');
                     actionsCell.appendChild(dropdown);
                 });
-
+        
                 liveCustomersContent.style.display = 'block';
                 demoCustomersContent.style.display = 'none';
                 groupsContent.style.display = 'none';
@@ -1255,7 +1270,6 @@
                 console.error("Error fetching live customers:", error);
             }
         }
-
         async function fetchAndDisplayDemoCustomers(searchTerm = '') {
             const accessToken = localStorage.getItem('access_token');
             let url = '/accounts/api/demo-user-profiles/';
