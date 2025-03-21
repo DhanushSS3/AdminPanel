@@ -16,6 +16,7 @@
                     <div class="card-header">Login</div>
                     <div class="card-body">
                         <form id="login-form">
+                            {% csrf_token %}
                             <div class="mb-3">
                                 <label for="username" class="form-label">Username</label>
                                 <input type="text" class="form-control" id="username" name="username">
@@ -61,9 +62,11 @@
                     // Store access and refresh tokens in localStorage
                     localStorage.setItem('access_token', data.access);
                     localStorage.setItem('refresh_token', data.refresh); // Add this line
+                    console.log('Access Token:', data.access);
+                    console.log('Refresh Token:', data.refresh);
 
                     // Redirect to the dashboard
-                    window.location.href = '/static/accounts/dashboard.html';
+                    window.location.href = '/accounts/dashboard/';
                 } else {
                     messageDiv.textContent = data.message;
                 }

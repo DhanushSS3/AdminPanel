@@ -1,4 +1,3 @@
-
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -17,6 +16,60 @@ from rest_framework import status
 from .models import UserProfile, Wallet  # Import the Wallet model
 from django.db.models import F
 from datetime import datetime
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def login_view(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+    user = authenticate(request, username=username, password=password)
+
+    if user is not None and user.is_superuser:
+        login(request, user)
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)
+        refresh_token = str(refresh) #getting the refresh token
+
+        logger.info(f"Access Token generated: {access_token}")
+        logger.info(f"Refresh Token generated: {refresh_token}")
+
+        response = Response({
+            'message': 'Login successful',
+            'access': access_token,
+            'refresh': refresh_token, #sending the refresh token
+        }, status=status.HTTP_200_OK)
+
+        response.set_cookie(
+            'refresh_token',
+            refresh_token,
+            httponly=True,
+            secure=settings.SESSION_COOKIE_SECURE,
+            samesite=settings.SESSION_COOKIE_SAMESITE,
+        )
+
+        return response
+    elif user is not None:
+        return Response({'message': 'User is not a superuser'}, status=status.HTTP_403_FORBIDDEN)
+    else:
+        return Response({'message': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+    
+@login_required
+def login_page(request):
+    return render(request, 'accounts/login.html')
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def dashboard_view(request):
+    if request.user.is_superuser:
+        return Response({'message': 'Dashboard accessed successfully'}, status=status.HTTP_200_OK)
+    else:
+        return Response({'message': 'You do not have permission to access this dashboard.'}, status=status.HTTP_403_FORBIDDEN)
+
+
+def dashboard_html_view(request):
+    return render(request, 'accounts/dashboard.html')
 
 
 @api_view(['GET'])
@@ -183,13 +236,6 @@ def group_list_create(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def dashboard_view(request):
-    if request.user.is_superuser:
-        return Response({'message': 'Dashboard accessed successfully'}, status=status.HTTP_200_OK)
-    else:
-        return Response({'message': 'You do not have permission to access this dashboard.'}, status=status.HTTP_403_FORBIDDEN)
 
 
 from rest_framework.decorators import api_view, permission_classes
@@ -200,38 +246,7 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.conf import settings
 
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def login_view(request):
-    username = request.data.get('username')
-    password = request.data.get('password')
-    user = authenticate(request, username=username, password=password)
 
-    if user is not None and user.is_superuser:
-        refresh = RefreshToken.for_user(user)
-        access_token = str(refresh.access_token)
-        refresh_token = str(refresh) #getting the refresh token
-
-        response = Response({
-            'message': 'Login successful',
-            'access': access_token,
-            'refresh': refresh_token, #sending the refresh token
-        }, status=status.HTTP_200_OK)
-
-        response.set_cookie(
-            'refresh_token',
-            refresh_token,
-            httponly=True,
-            secure=settings.SESSION_COOKIE_SECURE,
-            samesite=settings.SESSION_COOKIE_SAMESITE,
-        )
-
-        return response
-    elif user is not None:
-        return Response({'message': 'User is not a superuser'}, status=status.HTTP_403_FORBIDDEN)
-    else:
-        return Response({'message': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
-    
 import logging
 logger = logging.getLogger(__name__)
 @api_view(['GET'])
@@ -352,8 +367,6 @@ def user_trades(request, user_id): # Added user_id parameter
     
 
 
-
-
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def block_unblock_user(request):
@@ -372,3 +385,4 @@ def block_unblock_user(request):
     user_profile.save()
 
     return Response({'message': 'User status updated successfully'}, status=status.HTTP_200_OK)
+
