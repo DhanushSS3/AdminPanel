@@ -32,8 +32,8 @@ def login_view(request):
         access_token = str(refresh.access_token)
         refresh_token = str(refresh) #getting the refresh token
 
-        logger.info(f"Access Token generated: {access_token}")
-        logger.info(f"Refresh Token generated: {refresh_token}")
+#         logger.info(f"Access Token generated: {access_token}")
+#         logger.info(f"Refresh Token generated: {refresh_token}")
 
         response = Response({
             'message': 'Login successful',
@@ -55,7 +55,7 @@ def login_view(request):
     else:
         return Response({'message': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
     
-@login_required
+@permission_classes([AllowAny])
 def login_page(request):
     return render(request, 'accounts/login.html')
 
@@ -135,7 +135,7 @@ def order_list(request):
 
     if order_time_str:
         try:
-            order_time = datetime.strptime(order_time_str, '%Y-%m-%d').date()
+            order_time = datetime.strptime(order_time_str, '%m-%d-%Y').date()
             orders = orders.filter(created_at__date=order_time) # Filtering based on created_at__date
         except ValueError:
             return Response({'error': 'Invalid date format'}, status=400)
@@ -386,3 +386,43 @@ def block_unblock_user(request):
 
     return Response({'message': 'User status updated successfully'}, status=status.HTTP_200_OK)
 
+
+@api_view(['PUT'])  
+@permission_classes([IsAuthenticated])
+def update_group(request, group_id):
+    """Updates an existing Group."""
+    try:
+        group = Group.objects.get(pk=group_id)
+    except Group.DoesNotExist:
+        return Response({'error': 'Group not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    # Make mutable copy of request data
+    data = request.data.copy()
+
+    # 🔍 Log to debug what's coming in
+    print("Incoming data:", data)
+
+    # ❌ Remove read-only fields
+    data.pop('created_at', None)
+    data.pop('updated_at', None)
+
+    serializer = GroupSerializer(group, data=data, partial=True)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_group(request, group_id):
+    """Deletes a Group."""
+    try:
+        group = Group.objects.get(pk=group_id)
+    except Group.DoesNotExist:
+        return Response({'error': 'Group not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    group.delete()
+    return Response({'message': 'Group deleted successfully'}, status=status.HTTP_204_NO_CONTENT)

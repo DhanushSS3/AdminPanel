@@ -559,104 +559,6 @@
         
     </div>
 
-    <div class="modal fade" id="editGroupModal" tabindex="-1" aria-labelledby="editGroupModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editGroupModalLabel">Update Group</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editGroupForm">
-                        <input type="hidden" id="editGroupId">
-                        <div class="mb-3">
-                            <label for="editName" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="editName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editSymbol" class="form-label">Symbol Name</label>
-                            <select class="form-select" id="editSymbol" required>
-                                <option value="">Select Symbol</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editCommissionAmount" class="form-label">Commission</label>
-                            <div class="input-group">
-                                <input type="number" class="form-control" id="editCommissionAmount" placeholder="Commission" required>
-                                <select class="form-select" id="editCommissionInOut">
-                                    <option value="in">In</option>
-                                    <option value="out">Out</option>
-                                    <option value="every">Every Trade</option>
-                                </select>
-                                <select class="form-select" id="editCommissionValueType">
-                                    <option value="value">Value</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editSymbolType" class="form-label">Symbol Type</label>
-                            <select class="form-select" id="editSymbolType" required>
-                                <option value="">Select Symbol Type</option>
-                                <option value="1">Currency Pair</option>
-                                <option value="2">Commodities</option>
-                                <option value="3">Indices</option>
-                                <option value="4">Crypto</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editSwapBuy" class="form-label">Swap Buy</label>
-                            <input type="text" class="form-control" id="editSwapBuy" placeholder="Swap Buy">
-                        </div>
-                        <div class="mb-3">
-                            <label for="editSwapSell" class="form-label">Swap Sell</label>
-                            <input type="text" class="form-control" id="editSwapSell" placeholder="Swap Sell">
-                        </div>
-                        <div class="mb-3">
-                            <label for="editMargin" class="form-label">Margin</label>
-                            <input type="number" class="form-control" id="editMargin" placeholder="Margin">
-                        </div>
-                        <div class="mb-3">
-                            <label for="editSpread" class="form-label">Spread</label>
-                            <input type="number" class="form-control" id="editSpread" placeholder="Spread">
-                        </div>
-                        <div class="mb-3">
-                            <label for="editDeviation" class="form-label">Deviation</label>
-                            <input type="number" class="form-control" id="editDeviation" placeholder="Deviation">
-                        </div>
-                        <div class="mb-3">
-                            <label for="editMinLot" class="form-label">Min Lot</label>
-                            <input type="number" class="form-control" id="editMinLot" placeholder="Min Lot">
-                        </div>
-                        <div class="mb-3">
-                            <label for="editMaxLot" class="form-label">Max Lot</label>
-                            <input type="number" class="form-control" id="editMaxLot" placeholder="Max Lot">
-                        </div>
-                        <div class="mb-3">
-                            <label for="editPips" class="form-label">Pips</label>
-                            <input type="number" class="form-control" id="editPips" placeholder="Pips">
-                        </div>
-                        <div class="mb-3">
-                            <label for="editSpreadPip" class="form-label">Spread Pip</label>
-                            <input type="number" class="form-control" id="editSpreadPip" placeholder="Spread Pip">
-                        </div>
-                        <div class="mb-3">
-                            <label for="editShowPoints" class="form-label">Show Points</label>
-                            <input type="number" class="form-control" id="editShowPoints" placeholder="Show Points">
-                        </div>
-                        <div class="mb-3">
-                            <label for="editPipCurrency" class="form-label">Pip Currency</label>
-                            <input type="text" class="form-control" id="editPipCurrency" placeholder="Pip Currency">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="updateGroup">Update</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
         const liveCustomerLink = document.getElementById('live-customer-link');
         const demoCustomerLink = document.getElementById('demo-customer-link');
@@ -705,19 +607,20 @@
             return cookieValue;
         }
 
-        function createDropdown(item, type) {
+       /* function createDropdown(item, type) {
+            console.log("Item status in createDropdown:", item.status)
             const dropdown = document.createElement('div');
             dropdown.classList.add('dropdown');
-
+        
             const button = document.createElement('button');
             button.classList.add('btn', 'btn-sm', 'dropdown-toggle');
             button.innerHTML = '&#9776;';
             button.setAttribute('data-bs-toggle', 'dropdown');
             button.setAttribute('aria-expanded', 'false');
-
+        
             const menu = document.createElement('ul');
             menu.classList.add('dropdown-menu');
-
+        
             if (type === 'liveCustomer' || type === 'demoCustomer') {
                 let options = [
                     { label: 'Manage Funds', action: () => manageFunds(item) },
@@ -725,11 +628,11 @@
                     { label: 'User Setting', action: () => userSetting(item) },
                     { label: 'Block/Unblock User', action: () => blockUnblockUser(item) },
                 ];
-
+        
                 if (type === 'liveCustomer') {
                     options.push({ label: 'User Kyc', action: () => userKyc(item) });
                 }
-
+        
                 options.forEach(option => {
                     const itemElement = document.createElement('li');
                     const link = document.createElement('a');
@@ -744,24 +647,148 @@
                     menu.appendChild(itemElement);
                 });
             } else if (type === 'groups') {
-                const editOption = document.createElement('li');
-                const editLink = document.createElement('a');
-                editLink.classList.add('dropdown-item');
-                editLink.href = '#';
-                editLink.textContent = 'Edit';
-                editLink.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    editGroup(item);
+                const itemElement = document.createElement('li');
+                itemElement.textContent = "No Group Actions";
+                menu.appendChild(itemElement);
+        
+            }else if (type === 'moneyRequests') {
+                const itemElement = document.createElement('li');
+                itemElement.textContent = "No Money Request Actions";
+                menu.appendChild(itemElement);
+            }
+        
+            dropdown.appendChild(button);
+            dropdown.appendChild(menu);
+        
+            return dropdown;
+        }*/
+        
+        function createDropdown(item, type) {
+            console.log("Item status in createDropdown:", item.status);
+            const dropdown = document.createElement('div');
+            dropdown.classList.add('dropdown');
+        
+            const button = document.createElement('button');
+            button.classList.add('btn', 'btn-sm', 'dropdown-toggle');
+            button.innerHTML = '&#9776;';
+            button.setAttribute('data-bs-toggle', 'dropdown');
+            button.setAttribute('aria-expanded', 'false');
+        
+            const menu = document.createElement('ul');
+            menu.classList.add('dropdown-menu');
+        
+            if (type === 'liveCustomer' || type === 'demoCustomer') {
+                let options = [
+                    { label: 'Manage Funds', action: () => manageFunds(item) },
+                    { label: 'Trades', action: () => trades(item) },
+                    { label: 'User Setting', action: () => userSetting(item) },
+                    { label: 'Block/Unblock User', action: () => blockUnblockUser(item) },
+                ];
+        
+                if (type === 'liveCustomer') {
+                    options.push({ label: 'User Kyc', action: () => userKyc(item) });
+                }
+        
+                options.forEach(option => {
+                    const itemElement = document.createElement('li');
+                    const link = document.createElement('a');
+                    link.classList.add('dropdown-item');
+                    link.href = '#';
+                    link.textContent = option.label;
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        option.action();
+                    });
+                    itemElement.appendChild(link);
+                    menu.appendChild(itemElement);
                 });
-                editOption.appendChild(editLink);
-                menu.appendChild(editOption);
+            } else if (type === 'groups') {
+                let options = [
+                    { label: 'Edit Group', action: () => editGroup(item) },
+                    { label: 'Delete Group', action: () => deleteGroup(item) },
+                ];
+        
+                options.forEach(option => {
+                    const itemElement = document.createElement('li');
+                    const link = document.createElement('a');
+                    link.classList.add('dropdown-item');
+                    link.href = '#';
+                    link.textContent = option.label;
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        option.action();
+                    });
+                    itemElement.appendChild(link);
+                    menu.appendChild(itemElement);
+                });
+            }
+        
+            dropdown.appendChild(button);
+            dropdown.appendChild(menu);
+        
+            return dropdown;
+        }
+        
+
+        /*function createDropdown(item, type) { // Add 'type' parameter
+            const dropdown = document.createElement('div');
+            dropdown.classList.add('dropdown');
+
+            const button = document.createElement('button');
+            button.classList.add('btn', 'btn-sm', 'dropdown-toggle');
+            button.innerHTML = '&#9776;';
+            button.setAttribute('data-bs-toggle', 'dropdown');
+            button.setAttribute('aria-expanded', 'false');
+
+            const menu = document.createElement('ul');
+            menu.classList.add('dropdown-menu');
+
+            if (type === 'liveCustomer') { // Conditionally add options
+                const options = [
+                    { label: 'Manage Funds', action: () => manageFunds(item) },
+                    { label: 'Trades', action: () => trades(item) },
+                    { label: 'User Setting', action: () => userSetting(item) },
+                    { label: 'User Kyc', action: () => userKyc(item) },
+                    { label: 'Block User', action: () => blockUser(item) }
+                ];
+
+                options.forEach(option => {
+                    const itemElement = document.createElement('li');
+                    const link = document.createElement('a');
+                    link.classList.add('dropdown-item');
+                    link.href = '#';
+                    link.textContent = option.label;
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        option.action();
+                    });
+                    itemElement.appendChild(link);
+                    menu.appendChild(itemElement);
+                });
+            } else if (type === 'demoCustomer') { // Different actions for demo
+                const itemElement = document.createElement('li');
+                itemElement.textContent = "No Demo Actions";
+                menu.appendChild(itemElement);
+            } else if (type === 'groups'){
+                const itemElement = document.createElement('li');
+                itemElement.textContent = "No Group Actions";
+                menu.appendChild(itemElement);
+            } else if(type === 'orders'){
+                const itemElement = document.createElement('li');
+                itemElement.textContent = "No Order Actions";
+                menu.appendChild(itemElement);
+            } else if(type === 'moneyRequests'){
+                const itemElement = document.createElement('li');
+                itemElement.textContent = "No Money Request Actions";
+                menu.appendChild(itemElement);
             }
 
             dropdown.appendChild(button);
             dropdown.appendChild(menu);
 
             return dropdown;
-        }
+        }*/
+
 
         async function fetchWithTokenRefresh(url, options = {}) {
             let accessToken = localStorage.getItem('access_token');
@@ -1104,10 +1131,72 @@
             // Add event listener to update the balance
             popup.querySelector('.add-balance').addEventListener('click', () => {
                 const newBalance = popup.querySelector('#balance').value;
-                updateCustomerDetails(customer.id, newBalance, popup.querySelector('#group').value);
+                const newGroupId = popup.querySelector('#group').value;
+                updateCustomerDetails(customer.id, newBalance, newGroupId); // Use the new function name
                 document.body.removeChild(popup);
             });
         }
+        
+        // Example usage:
+        // Assuming you have a customer object available, e.g., from a table row click:
+        // userSetting(customer);
+        /*function userSetting(customer) {
+            // Create the popup container
+            const popup = document.createElement('div');
+            popup.classList.add('user-settings-popup');
+        
+            // Populate the popup with user settings data
+            popup.innerHTML = `
+                <h2>User Settings</h2>
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" value="${customer.name || 'NA'}" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" value="${customer.email || 'NA'}" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" value="${customer.phone_number || 'NA'}" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="phone_number">Phone Number</label>
+                    <input type="tel" id="phone_number" value="${customer.phone_number || 'NA'}" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="bank_account_number">Bank Account Number</label>
+                    <input type="text" id="bank_account_number" value="${customer.bank_account_number || 'NA'}" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="bank_ifsc_code">Bank IFSC Code</label>
+                    <input type="text" id="bank_ifsc_code" value="${customer.bank_ifsc_code || 'NA'}" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="balance">Balance</label>
+                    <input type="number" id="balance" value="${customer.wallet_total_amount || 0}">
+                </div>
+                <div class="form-actions">
+                    <button class="add-balance">Add</button>
+                    <button class="cancel-balance">Cancel</button>
+                </div>
+            `;
+        
+            // Append the popup to the body
+            document.body.appendChild(popup);
+        
+            // Add event listener to close the popup
+            popup.querySelector('.cancel-balance').addEventListener('click', () => {
+                document.body.removeChild(popup);
+            });
+        
+            // Add event listener to update the balance
+            popup.querySelector('.add-balance').addEventListener('click', () => {
+                const newBalance = popup.querySelector('#balance').value;
+                updateBalance(customer.id, newBalance); // Call function to update balance
+                document.body.removeChild(popup);
+            });
+        }*/
 
         async function userKyc(item) {
             const userId = item.id;
@@ -1355,6 +1444,8 @@
 
         const groupNameFilter = document.getElementById('groupNameFilter');
         const groupSymbolFilter = document.getElementById('groupSymbolFilter');
+
+        // ... (Your existing code)
 
         document.getElementById('addGroupButton').addEventListener('click', async () => {
             const addGroupModal = new bootstrap.Modal(document.getElementById('addGroupModal'));
@@ -1950,6 +2041,7 @@
                 window.location.href = '/accounts/login/';
             }
         }
+        
         /*async function checkAuthentication() {
             const accessToken = localStorage.getItem('access_token');
             try {
@@ -1970,93 +2062,6 @@
             }
         }*/
         
-        async function editGroup(group) {
-            // Populate the edit form with the group's current values
-            document.getElementById('editGroupId').value = group.id;
-            document.getElementById('editName').value = group.name;
-            document.getElementById('editSymbol').value = group.symbol;
-            document.getElementById('editCommissionAmount').value = group.commision;
-            document.getElementById('editCommissionInOut').value = group.commision_type;
-            document.getElementById('editCommissionValueType').value = group.commision_value_type;
-            document.getElementById('editSymbolType').value = group.type;
-            document.getElementById('editSwapBuy').value = group.swap_buy;
-            document.getElementById('editSwapSell').value = group.swap_sell;
-            document.getElementById('editMargin').value = group.margin;
-            document.getElementById('editSpread').value = group.spread;
-            document.getElementById('editDeviation').value = group.deviation;
-            document.getElementById('editMinLot').value = group.min_lot;
-            document.getElementById('editMaxLot').value = group.max_lot;
-            document.getElementById('editPips').value = group.pips;
-            document.getElementById('editSpreadPip').value = group.spread_pip;
-            document.getElementById('editShowPoints').value = group.show_points;
-            document.getElementById('editPipCurrency').value = group.pip_currency;
-
-            // Populate the symbol dropdown
-            const symbols = await populateDropdowns();
-            const symbolDropdown = document.getElementById('editSymbol');
-            symbolDropdown.innerHTML = '<option value="">Select Symbol</option>';
-            symbols.forEach(symbol => {
-                const option = document.createElement('option');
-                option.value = symbol;
-                option.textContent = symbol;
-                if (symbol === group.symbol) {
-                    option.selected = true;
-                }
-                symbolDropdown.appendChild(option);
-            });
-
-            // Show the edit modal
-            const editGroupModal = new bootstrap.Modal(document.getElementById('editGroupModal'));
-            editGroupModal.show();
-        }
-
-        // Add event listener for the update button
-        document.getElementById('updateGroup').addEventListener('click', async () => {
-            const groupId = document.getElementById('editGroupId').value;
-            const groupData = {
-                symbol: document.getElementById('editSymbol').value,
-                name: document.getElementById('editName').value,
-                commision: document.getElementById('editCommissionAmount').value,
-                commision_type: document.getElementById('editCommissionInOut').value,
-                commision_value_type: document.getElementById('editCommissionValueType').value,
-                type: document.getElementById('editSymbolType').value,
-                swap_buy: document.getElementById('editSwapBuy').value,
-                swap_sell: document.getElementById('editSwapSell').value,
-                margin: document.getElementById('editMargin').value,
-                spread: document.getElementById('editSpread').value,
-                deviation: document.getElementById('editDeviation').value,
-                min_lot: document.getElementById('editMinLot').value,
-                max_lot: document.getElementById('editMaxLot').value,
-                pips: document.getElementById('editPips').value,
-                spread_pip: document.getElementById('editSpreadPip').value,
-                show_points: document.getElementById('editShowPoints').value,
-                pip_currency: document.getElementById('editPipCurrency').value
-            };
-
-            try {
-                const response = await fetchWithTokenRefresh(`/accounts/api/groups/${groupId}/`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCookie('csrftoken'),
-                    },
-                    body: JSON.stringify(groupData),
-                });
-
-                if (response.ok) {
-                    alert('Group updated successfully!');
-                    const editGroupModal = bootstrap.Modal.getInstance(document.getElementById('editGroupModal'));
-                    editGroupModal.hide();
-                    fetchAndDisplayGroups(); // Refresh the table
-                } else {
-                    const errorData = await response.json();
-                    alert(`Error updating group: ${errorData.error || response.statusText}`);
-                }
-            } catch (error) {
-                console.error('Error updating group:', error);
-                alert('An error occurred while updating the group.');
-            }
-        });
 
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -18,19 +18,14 @@ class UserProfileLimitedSerializer(serializers.ModelSerializer):
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
-        # fields = [
-        #     'symbol',
-        #     'name',
-        #     'commision',
-        #     'commision_type',
-        #     'commision_value_type',
-        #     'margin',
-        #     'spread',
-        #     'deviation',
-        #     'min_lot',
-        #     'max_lot',
-        # ]
         fields = '__all__'
+        read_only_fields = ['created_at', 'updated_at']
+        extra_kwargs = {
+            'created_at': {'required': False},
+            'updated_at': {'required': False},
+        }
+
+
 
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:

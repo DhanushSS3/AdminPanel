@@ -66,8 +66,7 @@ class Group(models.Model):
     image = models.CharField(max_length=255, null=True, blank=True) # Nullable
     show_points = models.CharField(max_length=255, null=True, blank=True)
     pip_currency = models.CharField(max_length=255, null=True, blank=True, default='USD') # Nullable with default
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+
 
     class Meta:
         db_table = 'group_creation'

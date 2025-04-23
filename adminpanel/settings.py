@@ -143,7 +143,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKEN': True,
     'BLACKLIST_AFTER_ROTATION': True,
@@ -186,3 +186,11 @@ LOGGING = {
         'level': 'INFO',  # Adjust level as needed (DEBUG, INFO, WARNING, ERROR, CRITICAL)
     },
 }
+
+# DATABASE_NAME=u436589492_forex
+# DATABASE_USER=u436589492_forex
+# DATABASE_PASSWORD=Setupdev@1998
+# DATABASE_HOST=89.117.188.103
+# DATABASE_PORT=3306
+
+# ALLOWED_HOSTS=ordersapi.livefxhub.com,69.62.73.198,127.0.0.1
